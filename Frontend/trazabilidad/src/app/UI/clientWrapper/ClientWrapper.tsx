@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { useLanguage } from '../../context/LanguageContext';
+import { useLanguage } from '../../lib/context/LanguageContext';
 
 const HtmlLangUpdater: React.FC = () => {
   const { currentLanguage } = useLanguage();

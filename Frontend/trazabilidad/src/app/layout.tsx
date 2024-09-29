@@ -1,5 +1,5 @@
 import { Inter } from 'next/font/google';
-import { LanguageProvider } from './context/LanguageContext';
+import { LanguageProvider } from './lib/context/LanguageContext';
 import ClientWrapper from './UI/clientWrapper/ClientWrapper';
 
 const inter = Inter({ subsets: ['latin'] });

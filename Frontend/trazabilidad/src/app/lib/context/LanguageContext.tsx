@@ -1,6 +1,8 @@
 // src/context/LanguageContext.tsx
 'use client';
 
+import enTranslations from '@/app/lib/translations/en.yaml';
+import esTranslations from '@/app/lib/translations/es.yaml';
 import React, {
   createContext,
   ReactNode,
@@ -8,8 +10,6 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import enTranslations from '../UI/translations/en.yaml';
-import esTranslations from '../UI/translations/es.yaml';
 
 interface Translations {
   [key: string]: string;

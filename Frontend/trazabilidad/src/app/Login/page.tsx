@@ -1,10 +1,11 @@
-// src/app/Login/page.tsx
+// src/app/login/page.tsx
+import styles from '@/app/UI/login/login.module.css';
+import LoginForm from '@/app/UI/Login/LoginForm/LoginForm';
 
 const LoginPage = () => {
   return (
-    <div>
-      <h1>Welcome to the Login Page</h1>
-      <p>Please login to continue.</p>
+    <div className={styles.container}>
+      <LoginForm />
     </div>
   );
 };

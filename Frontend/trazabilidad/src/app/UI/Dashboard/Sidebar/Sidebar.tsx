@@ -1,5 +1,7 @@
 'use client';
 
+import { useLanguage } from '@/app/lib/context/LanguageContext';
+import SmartTecLogo from '@/app/UI/images/SmartTec_logo.ico';
 import {
   faChartBar,
   faChevronDown,
@@ -15,8 +17,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useRef, useState } from 'react';
-import { useLanguage } from '../../../context/LanguageContext';
-import SmartTecLogo from '../../images/SmartTec_logo.ico';
 import styles from './Sidebar.module.css';
 
 const Sidebar: React.FC = () => {

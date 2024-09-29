@@ -44,6 +44,13 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-config -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+			<version>6.3.3</version>
+		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-log4j2 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -130,7 +137,7 @@
 			<version>2.3.232</version>
 			<scope>test</scope>
 		</dependency>
-	</dependencies>
+ </dependencies>
 
 	<dependencyManagement>
 		<dependencies>
