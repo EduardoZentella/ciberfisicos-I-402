@@ -70,12 +70,12 @@ public class AuthenticationService {
         usuarioRepository.save(usuario);
 
         // Obtener el último `id` para el `usuarioId` y generar un nuevo `id`
-        Long ultimoId = historialRepository.findMaxIdByUsuarioId(usuario.getId()).orElse(0L);
+        Long ultimoId = historialRepository.findMaxIdByUsuarioId(usuario.getUsuarioId()).orElse(0L);
         Long nuevoId = ultimoId + 1;
 
         // Guardar en el historial
         Historial historial = Historial.builder()
-            .historialId(new HistorialId(usuario.getId(), nuevoId))
+            .historialId(new HistorialId(usuario.getUsuarioId(), nuevoId))
             .contraseña(usuario.getContraseña())
             .masterKey(encryptedMasterKey)
             .version("V1")
@@ -88,7 +88,7 @@ public class AuthenticationService {
     public ResponseEntity<String> register2(HttpServletRequest request) {
         // Crear un nuevo usuario con los valores específicos
         Usuario usuario = Usuario.builder()
-                .id(999L)
+                .usuarioId(999L)
                 .email("SYSTEM")
                 .contraseña("12345")
                 .role("S_ADMIN")
@@ -109,12 +109,12 @@ public class AuthenticationService {
         usuarioRepository.save(usuario);
         
         // Obtener el último `id` para el `usuarioId` y generar un nuevo `id`
-        Long ultimoId = historialRepository.findMaxIdByUsuarioId(usuario.getId()).orElse(0L);
+        Long ultimoId = historialRepository.findMaxIdByUsuarioId(usuario.getUsuarioId()).orElse(0L);
         Long nuevoId = ultimoId + 1;
 
         // Guardar en el historial
         Historial historial = Historial.builder()
-            .historialId(new HistorialId(usuario.getId(), nuevoId))
+            .historialId(new HistorialId(usuario.getUsuarioId(), nuevoId))
             .contraseña(usuario.getContraseña())
             .masterKey(encryptedMasterKey)
             .version("V1")

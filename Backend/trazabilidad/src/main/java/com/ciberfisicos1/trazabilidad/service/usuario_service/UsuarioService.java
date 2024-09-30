@@ -73,24 +73,9 @@ public class UsuarioService {
             target.setRole(source.getRole());
         }
         if (source.getContraseña() != null) {
-            // Guardar la contraseña actual antes de actualizarla
-            String currentPassword = target.getContraseña();
             // Actualizar la contraseña del usuario
             String newPassword = passwordEncoder.encode(source.getContraseña());
             target.setContraseña(newPassword);
-
-            // Re-encriptar las contraseñas en el historial con la nueva contraseña
-            List<Historial> historialList = historialRepository.findByHistorialIdUsuarioId(target.getId());
-            for (Historial historial : historialList) {
-                // Desencriptar la contraseña antigua
-                String decryptedOldPassword = passwordEncoder.matches(historial.getContraseña(), currentPassword) ? source.getContraseña() : null;
-                if (decryptedOldPassword != null) {
-                    // Re-encriptar la contraseña con la nueva contraseña
-                    String encryptedNewPassword = passwordEncoder.encode(decryptedOldPassword);
-                    historial.setContraseña(encryptedNewPassword);
-                    historialRepository.save(historial);
-                }
-            }
 
             // Generar y encriptar la nueva MasterKey
             String masterKey = encryptionService.generateMasterKey();
@@ -103,15 +88,15 @@ public class UsuarioService {
             target.setMasterKeyVersion(newVersion);
 
             // Obtener el último `id` para el `usuarioId` y generar un nuevo `id`
-            Long ultimoId = historialRepository.findMaxIdByUsuarioId(source.getId()).orElse(0L);
+            Long ultimoId = historialRepository.findMaxIdByUsuarioId(source.getUsuarioId()).orElse(0L);
             Long nuevoId = ultimoId + 1;
 
             // Guardar en el historial
             Historial historial = Historial.builder()
-                .historialId(new HistorialId(source.getId(), nuevoId))
+                .historialId(new HistorialId(source.getUsuarioId(), nuevoId))
                 .contraseña(source.getContraseña())
                 .masterKey(encryptedMasterKey)
-                .version("V1")
+                .version(newVersion)
                 .build();
             historialRepository.save(historial);
         }

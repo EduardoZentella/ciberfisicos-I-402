@@ -64,7 +64,7 @@ public class UsuarioController {
                 Usuario existingUsuario = data.get();
 
                 // Verificar permisos
-                if (!authUser.getRole().equals("ADMIN") && !authUser.getRole().equals("S_ADMIN") && !authUser.getId().equals(id)) {
+                if (!authUser.getRole().equals("ADMIN") && !authUser.getRole().equals("S_ADMIN") && !authUser.getUsuarioId().equals(id)) {
                     throw new ForbiddenException("Acceso denegado: solo los administradores y el mismo usuario pueden alterar usuarios.");
                 }
 

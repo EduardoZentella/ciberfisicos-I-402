@@ -15,15 +15,15 @@ public class Historial {
     private HistorialId historialId;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(name = "Contraseña", nullable = false)
     private String contraseña;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(name = "Master_Key", nullable = false)
     private String masterKey;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(name = "Version", nullable = false)
     private String version;
 
     // Getters y Setters

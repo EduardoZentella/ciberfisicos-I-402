@@ -19,18 +19,19 @@ import lombok.Builder;
 public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    @Column(name = "Usuario_Id")
+    private Long usuarioId;
     @NotNull
-    @Column(nullable = false)
+    @Column(name = "Email", nullable = false)
     private String email;
-
     @NotNull
-    @Column(nullable = false)
+    @Column(name = "Contraseña", nullable = false)
     private String contraseña;
-
+    @Column(name = "Role")
     private String role;
+    @Column(name = "Master_Key")
     private String masterKey;
+    @Column(name = "Master_Key_Version")
     private String masterKeyVersion;
 
     // Getters y Setters

@@ -3,6 +3,7 @@ package com.ciberfisicos1.trazabilidad.service.encryption_service;
 import java.security.Security;
 import java.security.spec.KeySpec;
 import java.util.Base64;
+import java.util.Optional;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -15,13 +16,19 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.stereotype.Service;
 
 import com.ciberfisicos1.trazabilidad.errors.exceptions.InternalServerErrorException;
+import com.ciberfisicos1.trazabilidad.model.historial.Historial;
+import com.ciberfisicos1.trazabilidad.repository.historial_repository.HistorialRepository;
 
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 
 
 @Service
+@RequiredArgsConstructor
 public class EncryptionService {
 
+    private final HistorialRepository historialRepository;
+    
     @PostConstruct
     public void init() {
         Security.addProvider(new BouncyCastleProvider());
@@ -66,32 +73,64 @@ public class EncryptionService {
         }
     }
 
-    public String encryptData(String data, String masterKey, String version) {
-        try {
-            SecretKeySpec secretKeySpec = new SecretKeySpec(Base64.getDecoder().decode(masterKey), "AES");
-
-            Cipher cipher = Cipher.getInstance("AES");
-            cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
-            byte[] encryptedData = cipher.doFinal(data.getBytes());
-            return version + "_" + Base64.getEncoder().encodeToString(encryptedData);
-        } catch (Exception e) {
-            throw new InternalServerErrorException("Error al encriptar los datos");
+    public String encryptData(String data, Long usuarioId) {
+        // Obtener la versión más reciente del historial
+        Optional<Historial> latestHistorial = historialRepository.findByHistorialIdUsuarioId(usuarioId).stream().findFirst();
+        if (latestHistorial.isPresent()) {
+            String masterKey = decryptMasterKey(latestHistorial.get().getMasterKey(), latestHistorial.get().getContraseña());
+            try {
+                byte[] decodedKey = Base64.getDecoder().decode(masterKey);
+                if (decodedKey.length != 32) {
+                    throw new InternalServerErrorException("La longitud de la clave maestra no es válida");
+                }
+                SecretKeySpec secretKeySpec = new SecretKeySpec(decodedKey, "AES");
+    
+                Cipher cipher = Cipher.getInstance("AES");
+                cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
+                byte[] encryptedData = cipher.doFinal(data.getBytes());
+                return latestHistorial.get().getVersion() + "_" + Base64.getEncoder().encodeToString(encryptedData);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new InternalServerErrorException("Error al encriptar los datos");
+            }
+        } else {
+            throw new InternalServerErrorException("No se encontró el historial para el usuario");
         }
     }
 
-    public String decryptData(String encryptedData, String masterKey) {
-        try {
-            String[] parts = encryptedData.split("_", 2);
-            String data = parts[1];
+    public String decryptData(String encryptedData, Long usuarioId) {
+        // Obtener la versión de los datos encriptados
+        String[] parts = encryptedData.split("_", 2);
+        String version = parts[0];
+        String data = parts[1];
 
-            SecretKeySpec secretKeySpec = new SecretKeySpec(Base64.getDecoder().decode(masterKey), "AES");
+        // Obtener el historial correspondiente a la versión
+        Optional<Historial> historial = Optional.of(historialRepository.findByHistorialIdUsuarioIdAndVersion(usuarioId, version));
+        if (historial.isPresent()) {
+            // Encontrar la contraseña usada para encriptar los datos
+            String encryptedPassword = historial.get().getContraseña();
 
-            Cipher cipher = Cipher.getInstance("AES");
-            cipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
-            byte[] decryptedData = cipher.doFinal(Base64.getDecoder().decode(data));
-            return new String(decryptedData);
-        } catch (Exception e) {
-            throw new InternalServerErrorException("Error al desencriptar los datos");
+            // Desencriptar la MasterKey con la contraseña usada
+            String masterKey = decryptMasterKey(historial.get().getMasterKey(), encryptedPassword);
+
+            // Desencriptar los datos con la MasterKey desencriptada
+            try {
+                byte[] decodedKey = Base64.getDecoder().decode(masterKey);
+                if (decodedKey.length != 32) {
+                    throw new InternalServerErrorException("La longitud de la clave maestra no es válida");
+                }
+                SecretKeySpec secretKeySpec = new SecretKeySpec(decodedKey, "AES");
+    
+                Cipher cipher = Cipher.getInstance("AES");
+                cipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
+                byte[] decryptedData = cipher.doFinal(Base64.getDecoder().decode(data));
+                return new String(decryptedData);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new InternalServerErrorException("Error al desencriptar los datos");
+            }
+        } else {
+            throw new InternalServerErrorException("No se encontró el historial correspondiente a la versión");
         }
     }
 

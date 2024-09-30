@@ -42,13 +42,11 @@ public class EncryptionServiceIntegrationTest {
     @Test
     public void whenEncryptAndDecryptData_thenDecryptionIsValid() {
         // given
-        String masterKey = encryptionService.generateMasterKey();
         String data = "Sensitive Data";
-        String version = "V1";
 
         // when
-        String encryptedData = encryptionService.encryptData(data, masterKey, version);
-        String decryptedData = encryptionService.decryptData(encryptedData, masterKey);
+        String encryptedData = encryptionService.encryptData(data, 999L);
+        String decryptedData = encryptionService.decryptData(encryptedData, 999L);
 
         // then
         assertThat(decryptedData).isEqualTo(data);
