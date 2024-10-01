@@ -92,6 +92,7 @@ const Sidebar: React.FC = () => {
 
   return (
     <div className={styles.container}>
+      {isExpanded && <div className={styles.overlay}></div>}
       <div
         ref={sidebarRef}
         className={`${styles.sidebar} ${isExpanded ? styles.sidebarExpanded : styles.sidebarCollapsed}`}
@@ -203,7 +204,6 @@ const Sidebar: React.FC = () => {
           </button>
         </div>
       </div>
-      {isExpanded && <div className={styles.overlay}></div>}
     </div>
   );
 };
