@@ -6,16 +6,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.ciberfisicos1.trazabilidad.errors.exceptions.ResourceNotFoundException;
 import com.ciberfisicos1.trazabilidad.errors.exceptions.IllegalArgumentException;
+import com.ciberfisicos1.trazabilidad.model.proceso.Proceso;
 import com.ciberfisicos1.trazabilidad.model.tarea.Tarea;
 import com.ciberfisicos1.trazabilidad.repository.tarea_repository.TareaRepository;
 import com.ciberfisicos1.trazabilidad.service.encryption_service.EncryptionService;
 import lombok.RequiredArgsConstructor;
+import com.ciberfisicos1.trazabilidad.repository.proceso_repository.ProcesoRepository;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class TareaService {
 
     private final TareaRepository tareaRepository;
+    private final ProcesoRepository procesoRepository;
     private final EncryptionService encryptionService;
     private static final Long SYSTEM_USER_ID = 999L;
 
@@ -32,18 +36,31 @@ public class TareaService {
                     .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    public ResponseEntity<Tarea> addTarea(Tarea tarea) {
+    public ResponseEntity<Tarea> addTarea(Map<String, Object> tareaMap) {
+        Tarea tarea = new Tarea();
+        tarea.setName((String) tareaMap.get("name"));
+        tarea.setDescription((String) tareaMap.get("description"));
+        if (tareaMap.get("proceso") != null) {
+            Long procesoId = ((Number) tareaMap.get("proceso")).longValue();
+            Optional<Proceso> proceso = procesoRepository.findById(procesoId);
+            if (proceso.isPresent()) {
+                tarea.setProceso(proceso.get());
+            } else {
+                throw new ResourceNotFoundException("Proceso no encontrado con id: " + procesoId);
+            }
+        }
         encryptTarea(tarea);
         Tarea savedTarea = tareaRepository.save(tarea);
         decryptTarea(savedTarea);
         return ResponseEntity.ok(savedTarea);
     }
 
-    public ResponseEntity<Tarea> updateTarea(Tarea tarea, Long tareaId) {
+    public ResponseEntity<Tarea> updateTarea(Map<String, Object> tareaMap, Long tareaId) {
         Optional<Tarea> existingTarea = tareaRepository.findById(tareaId);
         if (existingTarea.isPresent()) {
             Tarea updatedTarea = existingTarea.get();
-            copyNonNullProperties(tarea, updatedTarea);
+            decryptTarea(updatedTarea);
+            copyNonNullProperties(tareaMap, updatedTarea);
             encryptTarea(updatedTarea);
             Tarea savedTarea = tareaRepository.save(updatedTarea);
             decryptTarea(savedTarea);
@@ -62,12 +79,21 @@ public class TareaService {
         }
     }
 
-    private void copyNonNullProperties(Tarea source, Tarea target) {
-        if (source.getName() != null) {
-            target.setName(source.getName());
+    private void copyNonNullProperties(Map<String, Object> source, Tarea target) {
+        if (source.get("name") != null) {
+            target.setName((String) source.get("name"));
         }
-        if (source.getDescription() != null) {
-            target.setDescription(source.getDescription());
+        if (source.get("description") != null) {
+            target.setDescription((String) source.get("description"));
+        }
+        if (source.get("proceso") != null) {
+            Long procesoId = ((Number) source.get("proceso")).longValue();
+            Optional<Proceso> proceso = procesoRepository.findById(procesoId);
+            if (proceso.isPresent()) {
+                target.setProceso(proceso.get());
+            } else {
+                throw new ResourceNotFoundException("Proceso no encontrado con id: " + procesoId);
+            }
         }
     }
 

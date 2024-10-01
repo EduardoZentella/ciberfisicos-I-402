@@ -1,6 +1,6 @@
 package com.ciberfisicos1.trazabilidad.controller.robot_actividad_controller;
 
-import java.util.List;
+import java.util.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.ciberfisicos1.trazabilidad.errors.exceptions.ForbiddenException;

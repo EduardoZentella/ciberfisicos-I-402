@@ -13,6 +13,7 @@ import com.ciberfisicos1.trazabilidad.security.jwt.JwtUtil;
 import com.ciberfisicos1.trazabilidad.service.tarea_service.TareaService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/tareas")
@@ -34,12 +35,12 @@ public class TareaController {
     }
 
     @PostMapping
-    public ResponseEntity<Tarea> addTarea(@RequestBody Tarea tarea) {
+    public ResponseEntity<Tarea> addTarea(@RequestBody Map<String, Object> tarea) {
         return tareaService.addTarea(tarea);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Tarea> updateTarea(@RequestBody Tarea tarea, @PathVariable Long id) {
+    public ResponseEntity<Tarea> updateTarea(@RequestBody Map<String, Object> tarea, @PathVariable Long id) {
         return tareaService.updateTarea(tarea, id);
     }
 

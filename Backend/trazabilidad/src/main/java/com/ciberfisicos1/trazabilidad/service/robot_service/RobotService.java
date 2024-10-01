@@ -44,6 +44,7 @@ public class RobotService {
         Optional<Robot> existingRobot = robotRepository.findById(robotId);
         if (existingRobot.isPresent()) {
             Robot updatedRobot = existingRobot.get();
+            decryptRobot(updatedRobot);
             copyNonNullProperties(robot, updatedRobot);
             encryptRobot(updatedRobot);
             Robot savedRobot = robotRepository.save(updatedRobot);

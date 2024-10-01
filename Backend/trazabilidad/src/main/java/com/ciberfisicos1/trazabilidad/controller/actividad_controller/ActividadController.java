@@ -1,5 +1,6 @@
 package com.ciberfisicos1.trazabilidad.controller.actividad_controller;
 
+import java.util.Map;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,12 +34,12 @@ public class ActividadController {
     }
 
     @PostMapping
-    public ResponseEntity<Actividad> addActividad(@RequestBody Actividad actividad) {
+    public ResponseEntity<Actividad> addActividad(@RequestBody Map<String, Object> actividad) {
         return actividadService.addActividad(actividad);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Actividad> updateActividad(@RequestBody Actividad actividad, @PathVariable Long id) {
+    public ResponseEntity<Actividad> updateActividad(@RequestBody Map<String, Object> actividad, @PathVariable Long id) {
         return actividadService.updateActividad(actividad, id);
     }
 

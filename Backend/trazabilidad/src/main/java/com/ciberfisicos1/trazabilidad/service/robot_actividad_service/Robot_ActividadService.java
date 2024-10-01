@@ -1,22 +1,27 @@
 package com.ciberfisicos1.trazabilidad.service.robot_actividad_service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.ciberfisicos1.trazabilidad.errors.exceptions.ResourceNotFoundException;
 import com.ciberfisicos1.trazabilidad.errors.exceptions.IllegalArgumentException;
 import com.ciberfisicos1.trazabilidad.service.encryption_service.EncryptionService;
 import lombok.RequiredArgsConstructor;
+import com.ciberfisicos1.trazabilidad.model.actividad.Actividad;
+import com.ciberfisicos1.trazabilidad.model.robot.Robot;
 import com.ciberfisicos1.trazabilidad.model.robot_actividad.ID_Robot_Actividad;
 import com.ciberfisicos1.trazabilidad.model.robot_actividad.Robot_Actividad;
+import com.ciberfisicos1.trazabilidad.repository.actividad_repository.ActividadRepository;
 import com.ciberfisicos1.trazabilidad.repository.robot_actividad_repository.Robot_ActividadRepository;
+import com.ciberfisicos1.trazabilidad.repository.robot_repository.RobotRepository;
 
 @Service
 @RequiredArgsConstructor
 public class Robot_ActividadService {
 
     private final Robot_ActividadRepository robotActividadRepository;
+    private final RobotRepository robotRepository;
+    private final ActividadRepository actividadRepository;
     private final EncryptionService encryptionService;
     private static final Long SYSTEM_USER_ID = 999L;
 
@@ -46,17 +51,30 @@ public class Robot_ActividadService {
     }
 
     public ResponseEntity<Robot_Actividad> addRobotActividad(Robot_Actividad robotActividad) {
-        encryptRobotActividad(robotActividad);
-        Robot_Actividad savedRobotActividad = robotActividadRepository.save(robotActividad);
-        decryptRobotActividad(savedRobotActividad);
-        return ResponseEntity.ok(savedRobotActividad);
+        Long robotId = robotActividad.getId().getRobotId();
+        Long actividadId = robotActividad.getId().getActividadId();
+        Optional<Robot> robot = robotRepository.findById(robotId);
+        Optional<Actividad> actividad = actividadRepository.findById(actividadId);
+
+        if (robot.isPresent() && actividad.isPresent()) {
+            robotActividad.setRobot(robot.get());
+            robotActividad.setActividad(actividad.get());
+
+            encryptRobotActividad(robotActividad);
+            Robot_Actividad savedRobotActividad = robotActividadRepository.save(robotActividad);
+            decryptRobotActividad(savedRobotActividad);
+            return ResponseEntity.ok(savedRobotActividad);
+        } else {
+            throw new ResourceNotFoundException("Robot o Actividad no encontrado");
+        }
     }
 
-    public ResponseEntity<Robot_Actividad> updateRobotActividad(Robot_Actividad robotActividad, ID_Robot_Actividad id) {
+    public ResponseEntity<Robot_Actividad> updateRobotActividad(Robot_Actividad robotActividadMap, ID_Robot_Actividad id) {
         Optional<Robot_Actividad> existingRobotActividad = robotActividadRepository.findById(id);
         if (existingRobotActividad.isPresent()) {
             Robot_Actividad updatedRobotActividad = existingRobotActividad.get();
-            copyNonNullProperties(robotActividad, updatedRobotActividad);
+            decryptRobotActividad(updatedRobotActividad);
+            copyNonNullProperties(robotActividadMap, updatedRobotActividad);
             encryptRobotActividad(updatedRobotActividad);
             Robot_Actividad savedRobotActividad = robotActividadRepository.save(updatedRobotActividad);
             decryptRobotActividad(savedRobotActividad);

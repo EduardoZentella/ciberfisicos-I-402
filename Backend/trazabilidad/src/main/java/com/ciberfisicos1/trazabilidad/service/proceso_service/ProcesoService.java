@@ -43,6 +43,7 @@ public class ProcesoService {
         Optional<Proceso> existingProceso = procesoRepository.findById(procesoId);
         if (existingProceso.isPresent()) {
             Proceso updatedProceso = existingProceso.get();
+            decryptProceso(updatedProceso);
             copyNonNullProperties(proceso, updatedProceso);
             encryptProceso(updatedProceso);
             Proceso savedProceso = procesoRepository.save(updatedProceso);

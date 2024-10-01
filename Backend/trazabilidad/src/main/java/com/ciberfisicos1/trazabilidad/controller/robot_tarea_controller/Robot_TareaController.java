@@ -1,6 +1,6 @@
 package com.ciberfisicos1.trazabilidad.controller.robot_tarea_controller;
 
-import java.util.List;
+import java.util.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.ciberfisicos1.trazabilidad.errors.exceptions.ForbiddenException;
@@ -46,12 +46,12 @@ public class Robot_TareaController {
     }
 
     @PostMapping
-    public ResponseEntity<Robot_Tarea> addRobotTarea(@RequestBody Robot_Tarea robotTarea) {
+    public ResponseEntity<Robot_Tarea> addRobotTarea(@RequestBody  Robot_Tarea robotTarea) {
         return robotTareaService.addRobotTarea(robotTarea);
     }
 
     @PutMapping("/{robotId}/{tareaId}")
-    public ResponseEntity<Robot_Tarea> updateRobotTarea(@RequestBody Robot_Tarea robotTarea, @PathVariable Long robotId, @PathVariable Long tareaId) {
+    public ResponseEntity<Robot_Tarea> updateRobotTarea(@RequestBody  Robot_Tarea robotTarea, @PathVariable Long robotId, @PathVariable Long tareaId) {
         ID_Robot_Tarea id = new ID_Robot_Tarea(robotId, tareaId);
         return robotTareaService.updateRobotTarea(robotTarea, id);
     }

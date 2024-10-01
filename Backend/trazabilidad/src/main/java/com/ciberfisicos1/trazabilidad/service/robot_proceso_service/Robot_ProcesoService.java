@@ -1,14 +1,17 @@
 package com.ciberfisicos1.trazabilidad.service.robot_proceso_service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.ciberfisicos1.trazabilidad.errors.exceptions.ResourceNotFoundException;
 import com.ciberfisicos1.trazabilidad.errors.exceptions.IllegalArgumentException;
+import com.ciberfisicos1.trazabilidad.model.proceso.Proceso;
+import com.ciberfisicos1.trazabilidad.model.robot.Robot;
 import com.ciberfisicos1.trazabilidad.model.robot_proceso.ID_Robot_Proceso;
 import com.ciberfisicos1.trazabilidad.model.robot_proceso.Robot_Proceso;
+import com.ciberfisicos1.trazabilidad.repository.proceso_repository.ProcesoRepository;
 import com.ciberfisicos1.trazabilidad.repository.robot_proceso_repository.Robot_ProcesoRepository;
+import com.ciberfisicos1.trazabilidad.repository.robot_repository.RobotRepository;
 import com.ciberfisicos1.trazabilidad.service.encryption_service.EncryptionService;
 import lombok.RequiredArgsConstructor;
 
@@ -18,6 +21,8 @@ public class Robot_ProcesoService {
 
     private final Robot_ProcesoRepository robotProcesoRepository;
     private final EncryptionService encryptionService;
+    private final RobotRepository robotRepository;
+    private final ProcesoRepository procesoRepository;
     private static final Long SYSTEM_USER_ID = 999L;
 
     public ResponseEntity<List<Robot_Proceso>> getAllRobotProcesos() {
@@ -46,16 +51,29 @@ public class Robot_ProcesoService {
     }   
 
     public ResponseEntity<Robot_Proceso> addRobotProceso(Robot_Proceso robotProceso) {
-        encryptRobotProceso(robotProceso);
-        Robot_Proceso savedRobotProceso = robotProcesoRepository.save(robotProceso);
-        decryptRobotProceso(savedRobotProceso);
-        return ResponseEntity.ok(savedRobotProceso);
+        Long robotId = robotProceso.getId().getRobotId();
+        Long procesoId = robotProceso.getId().getProcesoId();
+        Optional<Robot> robot = robotRepository.findById(robotId);
+        Optional<Proceso> proceso = procesoRepository.findById(procesoId);
+
+        if (robot.isPresent() && proceso.isPresent()) {
+            robotProceso.setRobot(robot.get());
+            robotProceso.setProceso(proceso.get());
+
+            encryptRobotProceso(robotProceso);
+            Robot_Proceso savedRobotProceso = robotProcesoRepository.save(robotProceso);
+            decryptRobotProceso(savedRobotProceso);
+            return ResponseEntity.ok(savedRobotProceso);
+        } else {
+            throw new ResourceNotFoundException("Robot o Proceso no encontrado");
+        }
     }
 
     public ResponseEntity<Robot_Proceso> updateRobotProceso(Robot_Proceso robotProceso, ID_Robot_Proceso id) {
         Optional<Robot_Proceso> existingRobotProceso = robotProcesoRepository.findById(id);
         if (existingRobotProceso.isPresent()) {
             Robot_Proceso updatedRobotProceso = existingRobotProceso.get();
+            decryptRobotProceso(updatedRobotProceso);
             copyNonNullProperties(robotProceso, updatedRobotProceso);
             encryptRobotProceso(updatedRobotProceso);
             Robot_Proceso savedRobotProceso = robotProcesoRepository.save(updatedRobotProceso);

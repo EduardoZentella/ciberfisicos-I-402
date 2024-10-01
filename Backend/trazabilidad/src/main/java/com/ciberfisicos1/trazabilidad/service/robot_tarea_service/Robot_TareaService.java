@@ -1,13 +1,16 @@
 package com.ciberfisicos1.trazabilidad.service.robot_tarea_service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.ciberfisicos1.trazabilidad.errors.exceptions.ResourceNotFoundException;
+import com.ciberfisicos1.trazabilidad.model.robot.Robot;
 import com.ciberfisicos1.trazabilidad.model.robot_tarea.ID_Robot_Tarea;
 import com.ciberfisicos1.trazabilidad.model.robot_tarea.Robot_Tarea;
+import com.ciberfisicos1.trazabilidad.model.tarea.Tarea;
+import com.ciberfisicos1.trazabilidad.repository.robot_repository.RobotRepository;
 import com.ciberfisicos1.trazabilidad.repository.robot_tarea_repository.Robot_TareaRepository;
+import com.ciberfisicos1.trazabilidad.repository.tarea_repository.TareaRepository;
 import com.ciberfisicos1.trazabilidad.errors.exceptions.IllegalArgumentException;
 import com.ciberfisicos1.trazabilidad.service.encryption_service.EncryptionService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +21,8 @@ public class Robot_TareaService {
 
     private final Robot_TareaRepository robotTareaRepository;
     private final EncryptionService encryptionService;
+    private final RobotRepository robotRepository;
+    private final TareaRepository tareaRepository;
     private static final Long SYSTEM_USER_ID = 999L;
 
     public ResponseEntity<List<Robot_Tarea>> getAllRobotTareas() {
@@ -46,16 +51,29 @@ public class Robot_TareaService {
     }
 
     public ResponseEntity<Robot_Tarea> addRobotTarea(Robot_Tarea robotTarea) {
-        encryptRobotTarea(robotTarea);
-        Robot_Tarea savedRobotTarea = robotTareaRepository.save(robotTarea);
-        decryptRobotTarea(savedRobotTarea);
-        return ResponseEntity.ok(savedRobotTarea);
+        Long robotId = robotTarea.getId().getRobotId();
+        Long tareaId = robotTarea.getId().getTareaId();
+        Optional<Robot> robot = robotRepository.findById(robotId);
+        Optional<Tarea> tarea = tareaRepository.findById(tareaId);
+
+        if (robot.isPresent() && tarea.isPresent()) {
+            robotTarea.setRobot(robot.get());
+            robotTarea.setTarea(tarea.get());
+
+            encryptRobotTarea(robotTarea);
+            Robot_Tarea savedRobotTarea = robotTareaRepository.save(robotTarea);
+            decryptRobotTarea(savedRobotTarea);
+            return ResponseEntity.ok(savedRobotTarea);
+        } else {
+            throw new ResourceNotFoundException("Robot o Tarea no encontrado");
+        }
     }
 
     public ResponseEntity<Robot_Tarea> updateRobotTarea(Robot_Tarea robotTarea, ID_Robot_Tarea id) {
         Optional<Robot_Tarea> existingRobotTarea = robotTareaRepository.findById(id);
         if (existingRobotTarea.isPresent()) {
             Robot_Tarea updatedRobotTarea = existingRobotTarea.get();
+            decryptRobotTarea(updatedRobotTarea);
             copyNonNullProperties(robotTarea, updatedRobotTarea);
             encryptRobotTarea(updatedRobotTarea);
             Robot_Tarea savedRobotTarea = robotTareaRepository.save(updatedRobotTarea);

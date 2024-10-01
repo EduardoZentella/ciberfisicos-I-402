@@ -1,5 +1,6 @@
 package com.ciberfisicos1.trazabilidad.service.actividad_service;
 
+import java.util.Map;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.http.ResponseEntity;
@@ -7,7 +8,9 @@ import org.springframework.stereotype.Service;
 import com.ciberfisicos1.trazabilidad.errors.exceptions.ResourceNotFoundException;
 import com.ciberfisicos1.trazabilidad.errors.exceptions.IllegalArgumentException;
 import com.ciberfisicos1.trazabilidad.model.actividad.Actividad;
+import com.ciberfisicos1.trazabilidad.model.tarea.Tarea;
 import com.ciberfisicos1.trazabilidad.repository.actividad_repository.ActividadRepository;
+import com.ciberfisicos1.trazabilidad.repository.tarea_repository.TareaRepository;
 import com.ciberfisicos1.trazabilidad.service.encryption_service.EncryptionService;
 import lombok.RequiredArgsConstructor;
 
@@ -16,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class ActividadService {
 
     private final ActividadRepository actividadRepository;
+    private final TareaRepository tareaRepository;
     private final EncryptionService encryptionService;
     private static final Long SYSTEM_USER_ID = 999L;
 
@@ -32,18 +36,31 @@ public class ActividadService {
                         .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    public ResponseEntity<Actividad> addActividad(Actividad actividad) {
+    public ResponseEntity<Actividad> addActividad(Map<String, Object> actividadMap) {
+        Actividad actividad = new Actividad();
+        actividad.setName((String) actividadMap.get("name"));
+        actividad.setDescription((String) actividadMap.get("description"));
+        if (actividadMap.get("tarea") != null) {
+            Long tareaId = ((Number) actividadMap.get("tarea")).longValue();
+            Optional<Tarea> tarea = tareaRepository.findById(tareaId);
+            if (tarea.isPresent()) {
+                actividad.setTarea(tarea.get());
+            } else {
+                throw new ResourceNotFoundException("Tarea no encontrada con id: " + tareaId);
+            }
+        }
         encryptActividad(actividad);
         Actividad savedActividad = actividadRepository.save(actividad);
         decryptActividad(savedActividad);
         return ResponseEntity.ok(savedActividad);
     }
 
-    public ResponseEntity<Actividad> updateActividad(Actividad actividad, Long actividadId) {
+    public ResponseEntity<Actividad> updateActividad(Map<String, Object> actividadMap, Long actividadId) {
         Optional<Actividad> existingActividad = actividadRepository.findById(actividadId);
         if (existingActividad.isPresent()) {
             Actividad updatedActividad = existingActividad.get();
-            copyNonNullProperties(actividad, updatedActividad);
+            decryptActividad(updatedActividad);
+            copyNonNullProperties(actividadMap, updatedActividad);
             encryptActividad(updatedActividad);
             Actividad savedActividad = actividadRepository.save(updatedActividad);
             decryptActividad(savedActividad);
@@ -62,12 +79,21 @@ public class ActividadService {
         }
     }
 
-    private void copyNonNullProperties(Actividad source, Actividad target) {
-        if (source.getName() != null) {
-            target.setName(source.getName());
+    private void copyNonNullProperties(Map<String, Object> source, Actividad target) {
+        if (source.get("name") != null) {
+            target.setName((String) source.get("name"));
         }
-        if (source.getDescription() != null) {
-            target.setDescription(source.getDescription());
+        if (source.get("description") != null) {
+            target.setDescription((String) source.get("description"));
+        }
+        if (source.get("tarea") != null) {
+            Long tareaId = ((Number) source.get("tarea")).longValue();
+            Optional<Tarea> tarea = tareaRepository.findById(tareaId);
+            if (tarea.isPresent()) {
+                target.setTarea(tarea.get());
+            } else {
+                throw new ResourceNotFoundException("Tarea no encontrada con id: " + tareaId);
+            }
         }
     }
 
@@ -99,4 +125,3 @@ public class ActividadService {
         }
     }
 }
-

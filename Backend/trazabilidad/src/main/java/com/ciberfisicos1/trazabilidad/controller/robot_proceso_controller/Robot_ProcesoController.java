@@ -1,6 +1,6 @@
 package com.ciberfisicos1.trazabilidad.controller.robot_proceso_controller;
 
-import java.util.List;
+import java.util.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.ciberfisicos1.trazabilidad.errors.exceptions.ForbiddenException;
@@ -64,7 +64,7 @@ public class Robot_ProcesoController {
             String email = jwtUtil.extractEmail(jwt);
             Usuario authUser = usuarioRepository.findByEmail(email);
             if (authUser == null || (!authUser.getRole().equals("ADMIN") && !authUser.getRole().equals("S_ADMIN"))) {
-                throw new ForbiddenException("Acceso denegado: solo los administradores pueden eliminar Robot_Procesos.");
+                throw new ForbiddenException("Acceso denegado: solo los administradores pueden eliminar relaciones Robot_Proceso.");
             }
 
             ID_Robot_Proceso id = new ID_Robot_Proceso(robotId, procesoId);
@@ -74,4 +74,3 @@ public class Robot_ProcesoController {
         }
     }
 }
-
