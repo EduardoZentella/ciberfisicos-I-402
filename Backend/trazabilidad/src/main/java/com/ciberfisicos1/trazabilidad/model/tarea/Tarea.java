@@ -33,6 +33,7 @@ public class Tarea {
     @ManyToOne
     @NotNull
     @JoinColumn(name = "Proceso_Id", referencedColumnName = "Proceso_Id", nullable = false)
+    @JsonIgnore
     private Proceso proceso;
 
     @OneToMany(mappedBy = "tarea", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -30,6 +30,7 @@ public class Actividad {
     @ManyToOne
     @NotNull
     @JoinColumn(name = "Tarea_Id", referencedColumnName = "Tarea_Id", nullable = false)
+    @JsonIgnore
     private Tarea tarea;
 
     @ManyToMany(mappedBy = "actividades")
