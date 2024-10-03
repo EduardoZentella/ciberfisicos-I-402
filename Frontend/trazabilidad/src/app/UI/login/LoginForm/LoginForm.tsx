@@ -1,9 +1,9 @@
 // src/UI/login/loginForm/LoginForm.tsx
 'use client';
 
-import { loginHandler } from '@/app/lib/auth';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { loginHandler } from '../../../lib/auth';
 import styles from './loginForm.module.css';
 
 const LoginForm = () => {

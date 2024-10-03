@@ -1,8 +1,8 @@
 // ProcesoComponent.tsx
 'use client';
-import { Proceso } from '@/app/lib/models';
-import RestHandler from '@/app/lib/rest';
 import { useEffect, useState } from 'react';
+import { Proceso } from '../../lib/models';
+import RestHandler from '../../lib/rest';
 
 const ProcesoComponent = () => {
   const [procesos, setProcesos] = useState<Proceso[]>([]);
