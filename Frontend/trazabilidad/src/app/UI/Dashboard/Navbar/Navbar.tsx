@@ -1,7 +1,7 @@
 'use client';
 
+import { useLanguage } from '@/app/lib/context/LanguageContext';
 import Image from 'next/image';
-import { useLanguage } from '../../../lib/context/LanguageContext';
 import images from '../../images/smart_factory.png';
 import styles from './Navbar.module.css';
 
@@ -16,8 +16,6 @@ const Navbar: React.FC = () => {
       </div>
 
       <div className={styles.accesContainer}>
-        <div>Loco </div>
-        <div>LOCO</div>
         <div className={styles.languageSwitcher}>
           <button
             onClick={() => changeLanguage('en')}

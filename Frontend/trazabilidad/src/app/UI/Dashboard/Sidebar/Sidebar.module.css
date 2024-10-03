@@ -4,13 +4,17 @@
 }
 
 .sidebar {
-  background-color: #2c3e50;
-  color: #ecf0f1;
   position: fixed;
   height: 100vh;
   transition: all 0.3s;
   width: auto;
   min-width: 5.5rem;
+  background-image: linear-gradient(
+    111.4deg,
+    rgba(7, 7, 9, 1) 6.5%,
+    rgba(27, 24, 113, 1) 100%
+  );
+  z-index: 1000;
 }
 
 .sidebarExpanded {
@@ -199,7 +203,7 @@
   left: 16rem;
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(5px);
-  z-index: 0;
+  z-index: 1;
   pointer-events: none;
 }
 
@@ -221,22 +225,29 @@
 }
 
 .toggleButtonLip {
+  background-image: linear-gradient(
+    111.4deg,
+    rgba(7, 7, 9, 1) 6.5%,
+    rgba(27, 24, 113, 1) 100%
+  );
+  background-size: calc(250% + 16rem) 250%;
+  background-position: calc(-100% + 2.5rem) 0;
   position: absolute;
   width: 3.5rem;
   height: 12rem;
   top: 50%;
   transform: translateY(-50%);
-  background-color: #2c3e50;
-  clip-path: polygon(75% 0%, 100% 50%, 75% 100%, 0% 100%, 25% 50%, 0% 0%);
+  border-radius: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0;
-  right: -2rem;
+  right: -2.5rem;
   transition:
     right 0.5s,
     opacity 0.3s;
   cursor: pointer;
+  background-clip: padding-box;
 }
 
 .sidebar:hover .toggleButtonLip,
