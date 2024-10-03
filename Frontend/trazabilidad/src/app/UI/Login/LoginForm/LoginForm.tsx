@@ -4,7 +4,7 @@
 import { loginHandler } from '@/app/lib/auth';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import styles from './loginForm.module.css';
+import styles from './LoginForm.module.css';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');

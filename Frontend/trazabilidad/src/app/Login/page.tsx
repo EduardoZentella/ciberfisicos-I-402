@@ -1,5 +1,5 @@
 // src/app/login/page.tsx
-import styles from '@/app/UI/login/login.module.css';
+import styles from '@/app/UI/Login/Login.module.css';
 import LoginForm from '@/app/UI/Login/LoginForm/LoginForm';
 
 const LoginPage = () => {

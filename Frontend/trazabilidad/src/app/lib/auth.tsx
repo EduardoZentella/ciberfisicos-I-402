@@ -24,7 +24,6 @@ export async function authenticateUser(email: string, password: string) {
 }
 
 export async function loginHandler(email: string, password: string) {
-  'use server';
   const { token, success } = await authenticateUser(email, password);
 
   if (success) {

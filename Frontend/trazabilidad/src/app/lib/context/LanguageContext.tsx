@@ -1,4 +1,4 @@
-// src/context/LanguageContext.tsx
+// src/app/lib/context/LanguageContext.tsx
 'use client';
 
 import enTranslations from '@/app/lib/translations/en.yaml';
@@ -35,12 +35,16 @@ interface LanguageProviderProps {
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({
   children,
 }) => {
-  const [currentLanguage, setLanguage] = useState<string>(
-    navigator.language.startsWith('es') ? 'es' : 'en'
-  );
+  const [currentLanguage, setLanguage] = useState<string>('en');
   const [currentTranslations, setCurrentTranslations] = useState<Translations>(
-    translations[currentLanguage]
+    translations['en']
   );
+
+  useEffect(() => {
+    const language = navigator.language.startsWith('es') ? 'es' : 'en';
+    setLanguage(language);
+    setCurrentTranslations(translations[language]);
+  }, []);
 
   useEffect(() => {
     setCurrentTranslations(translations[currentLanguage]);
