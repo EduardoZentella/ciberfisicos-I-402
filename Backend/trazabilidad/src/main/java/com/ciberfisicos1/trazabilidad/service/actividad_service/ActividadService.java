@@ -3,11 +3,14 @@ package com.ciberfisicos1.trazabilidad.service.actividad_service;
 import java.util.Map;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.ciberfisicos1.trazabilidad.errors.exceptions.ResourceNotFoundException;
 import com.ciberfisicos1.trazabilidad.errors.exceptions.IllegalArgumentException;
 import com.ciberfisicos1.trazabilidad.model.actividad.Actividad;
+import com.ciberfisicos1.trazabilidad.model.dto.ActividadDTO;
 import com.ciberfisicos1.trazabilidad.model.tarea.Tarea;
 import com.ciberfisicos1.trazabilidad.repository.actividad_repository.ActividadRepository;
 import com.ciberfisicos1.trazabilidad.repository.tarea_repository.TareaRepository;
@@ -23,20 +26,20 @@ public class ActividadService {
     private final EncryptionService encryptionService;
     private static final Long SYSTEM_USER_ID = 999L;
 
-    public ResponseEntity<List<Actividad>> getAllActividades() {
+    public ResponseEntity<List<ActividadDTO>> getAllActividades() {
         List<Actividad> actividades = actividadRepository.findAll();
         actividades.forEach(this::decryptActividad);
-        return ResponseEntity.ok(actividades);
+        List<ActividadDTO> actividadesDTOs = actividades.stream().map(Actividad::toDTO).collect(Collectors.toList());
+        return ResponseEntity.ok(actividadesDTOs);
     }
 
-    public ResponseEntity<Actividad> getActividadById(Long actividadId) {
+    public ResponseEntity<ActividadDTO> getActividadById(Long actividadId) {
         Optional<Actividad> actividad = actividadRepository.findById(actividadId);
         actividad.ifPresent(this::decryptActividad);
-        return actividad.map(ResponseEntity::ok)
-                        .orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(actividad.map(Actividad::toDTO).orElseThrow(() -> new ResourceNotFoundException("Actividad no encontrada con id: " + actividadId)));
     }
 
-    public ResponseEntity<Actividad> addActividad(Map<String, Object> actividadMap) {
+    public ResponseEntity<ActividadDTO> addActividad(Map<String, Object> actividadMap) {
         Actividad actividad = new Actividad();
         actividad.setName((String) actividadMap.get("name"));
         actividad.setDescription((String) actividadMap.get("description"));
@@ -52,10 +55,10 @@ public class ActividadService {
         encryptActividad(actividad);
         Actividad savedActividad = actividadRepository.save(actividad);
         decryptActividad(savedActividad);
-        return ResponseEntity.ok(savedActividad);
+        return ResponseEntity.ok(savedActividad.toDTO());
     }
 
-    public ResponseEntity<Actividad> updateActividad(Map<String, Object> actividadMap, Long actividadId) {
+    public ResponseEntity<ActividadDTO> updateActividad(Map<String, Object> actividadMap, Long actividadId) {
         Optional<Actividad> existingActividad = actividadRepository.findById(actividadId);
         if (existingActividad.isPresent()) {
             Actividad updatedActividad = existingActividad.get();
@@ -64,7 +67,7 @@ public class ActividadService {
             encryptActividad(updatedActividad);
             Actividad savedActividad = actividadRepository.save(updatedActividad);
             decryptActividad(savedActividad);
-            return ResponseEntity.ok(savedActividad);
+            return ResponseEntity.ok(savedActividad.toDTO());
         } else {
             throw new ResourceNotFoundException("Actividad no encontrada con id: " + actividadId);
         }

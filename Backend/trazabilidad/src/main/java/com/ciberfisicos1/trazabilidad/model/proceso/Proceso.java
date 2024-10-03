@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import com.ciberfisicos1.trazabilidad.model.robot.Robot;
 import com.ciberfisicos1.trazabilidad.model.tarea.Tarea;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.*;
 import java.util.*;
 
 @Entity
@@ -13,6 +13,7 @@ import java.util.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Proceso {
 
     @Id
@@ -29,11 +30,13 @@ public class Proceso {
 
     @OneToMany(mappedBy = "proceso", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    @JsonIgnore
+    @JsonBackReference
     private List<Tarea> tareas = new ArrayList<>();
 
     @ManyToMany(mappedBy = "procesos")
     @Builder.Default
     @JsonIgnore
     private List<Robot> robots = new ArrayList<>();
+
+    // Getters y Setters
 }

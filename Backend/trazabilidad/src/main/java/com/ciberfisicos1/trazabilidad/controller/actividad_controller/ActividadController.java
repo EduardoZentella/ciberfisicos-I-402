@@ -11,7 +11,7 @@ import com.ciberfisicos1.trazabilidad.repository.usuario_repository.UsuarioRepos
 import com.ciberfisicos1.trazabilidad.security.jwt.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import com.ciberfisicos1.trazabilidad.model.actividad.Actividad;
+import com.ciberfisicos1.trazabilidad.model.dto.ActividadDTO;
 import com.ciberfisicos1.trazabilidad.service.actividad_service.ActividadService;
 
 @RestController
@@ -24,22 +24,22 @@ public class ActividadController {
     private final UsuarioRepository usuarioRepository;
 
     @GetMapping
-    public ResponseEntity<List<Actividad>> getAllActividades() {
+    public ResponseEntity<List<ActividadDTO>> getAllActividades() {
         return actividadService.getAllActividades();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Actividad> getActividadById(@PathVariable Long id) {
+    public ResponseEntity<ActividadDTO> getActividadById(@PathVariable Long id) {
         return actividadService.getActividadById(id);
     }
 
     @PostMapping
-    public ResponseEntity<Actividad> addActividad(@RequestBody Map<String, Object> actividad) {
+    public ResponseEntity<ActividadDTO> addActividad(@RequestBody Map<String, Object> actividad) {
         return actividadService.addActividad(actividad);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Actividad> updateActividad(@RequestBody Map<String, Object> actividad, @PathVariable Long id) {
+    public ResponseEntity<ActividadDTO> updateActividad(@RequestBody Map<String, Object> actividad, @PathVariable Long id) {
         return actividadService.updateActividad(actividad, id);
     }
 

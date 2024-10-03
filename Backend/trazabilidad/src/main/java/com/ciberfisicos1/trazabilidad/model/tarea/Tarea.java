@@ -2,20 +2,21 @@ package com.ciberfisicos1.trazabilidad.model.tarea;
 
 import com.ciberfisicos1.trazabilidad.model.proceso.Proceso;
 import com.ciberfisicos1.trazabilidad.model.robot.Robot;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 import com.ciberfisicos1.trazabilidad.model.actividad.Actividad;
+import com.ciberfisicos1.trazabilidad.model.dto.TareaDTO;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Tarea {
 
     @Id
@@ -45,6 +46,14 @@ public class Tarea {
     @JsonIgnore
     private List<Robot> robots = new ArrayList<>();
 
-    // Getters y Setters
+    public TareaDTO toDTO() {
+        TareaDTO dto = new TareaDTO();
+        dto.setTareaId(this.tareaId);
+        dto.setName(this.name);
+        dto.setDescription(this.description);
+        dto.setProcesoId(this.proceso.getProcesoId());
+        return dto;
+    }
 
+    // Getters y Setters
 }

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.ciberfisicos1.trazabilidad.errors.exceptions.ForbiddenException;
 import com.ciberfisicos1.trazabilidad.errors.exceptions.UnauthorizedException;
-import com.ciberfisicos1.trazabilidad.model.tarea.Tarea;
+import com.ciberfisicos1.trazabilidad.model.dto.TareaDTO;
 import com.ciberfisicos1.trazabilidad.model.usuario.Usuario;
 import com.ciberfisicos1.trazabilidad.repository.usuario_repository.UsuarioRepository;
 import com.ciberfisicos1.trazabilidad.security.jwt.JwtUtil;
@@ -25,22 +25,22 @@ public class TareaController {
     private final UsuarioRepository usuarioRepository;
 
     @GetMapping
-    public ResponseEntity<List<Tarea>> getAllTareas() {
+    public ResponseEntity<List<TareaDTO>> getAllTareas() {
         return tareaService.getAllTareas();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Tarea> getTareaById(@PathVariable Long id) {
+    public ResponseEntity<TareaDTO> getTareaById(@PathVariable Long id) {
         return tareaService.getTareaById(id);
     }
 
     @PostMapping
-    public ResponseEntity<Tarea> addTarea(@RequestBody Map<String, Object> tarea) {
+    public ResponseEntity<TareaDTO> addTarea(@RequestBody Map<String, Object> tarea) {
         return tareaService.addTarea(tarea);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Tarea> updateTarea(@RequestBody Map<String, Object> tarea, @PathVariable Long id) {
+    public ResponseEntity<TareaDTO> updateTarea(@RequestBody Map<String, Object> tarea, @PathVariable Long id) {
         return tareaService.updateTarea(tarea, id);
     }
 

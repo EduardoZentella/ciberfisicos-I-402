@@ -1,8 +1,39 @@
-const Navbar = () => {
+'use client';
+
+import Image from 'next/image';
+import { useLanguage } from '../../../lib/context/LanguageContext';
+import images from '../../images/smart_factory.png';
+import styles from './Navbar.module.css';
+
+const Navbar: React.FC = () => {
+  const { changeLanguage, currentLanguage } = useLanguage();
+
   return (
-    <div>
-      <h1>Navbar</h1>
-    </div>
+    <nav className={styles.navbar}>
+      <div className={styles.logoContainer}>
+        <Image src={images} alt="SmartTec logo" className={styles.logoImage} />
+        <span className={styles.logoText}>SmartTec</span>
+      </div>
+
+      <div className={styles.accesContainer}>
+        <div>Loco </div>
+        <div>LOCO</div>
+        <div className={styles.languageSwitcher}>
+          <button
+            onClick={() => changeLanguage('en')}
+            className={`${styles.languageButton} ${currentLanguage === 'en' ? styles.active : ''}`}
+          >
+            EN
+          </button>
+          <button
+            onClick={() => changeLanguage('es')}
+            className={`${styles.languageButton} ${currentLanguage === 'es' ? styles.active : ''}`}
+          >
+            ES
+          </button>
+        </div>
+      </div>
+    </nav>
   );
 };
 
