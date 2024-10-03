@@ -3,9 +3,10 @@
 }
 
 .menu {
-  flex: 1;
+  flex: 0 0 110px; 
 }
 
 .content {
   flex: 4;
 }
+
