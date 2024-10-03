@@ -119,7 +119,7 @@ const RestHandler = async <T extends DataType | DataType[]>(
 
   try {
     const response = await fetch(
-      `https://ciberfisicos-rest-api-4cc97e751779.herokuapp.com/api${apiPath}`,
+      `${process.env.NEXT_PUBLIC_API_URL}${apiPath}`,
       {
         method,
         headers: {

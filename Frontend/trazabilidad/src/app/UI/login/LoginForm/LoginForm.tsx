@@ -37,6 +37,7 @@ const LoginForm = () => {
         name="email"
         className={styles.input}
         required
+        autoComplete="current-email"
       />
       <input
         type="password"
@@ -46,6 +47,7 @@ const LoginForm = () => {
         name="password"
         className={styles.input}
         required
+        autoComplete="current-password"
       />
       <button type="submit" className={styles.button}>
         Login

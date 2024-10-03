@@ -3,13 +3,16 @@
 import { cookies } from 'next/headers';
 
 export async function authenticateUser(email: string, password: string) {
-  const response = await fetch('https://ciberfisicos-rest-api-4cc97e751779.herokuapp.com/api/auth/authenticate', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ email, contraseña: password }),
-  });
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/auth/authenticate`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, contraseña: password }),
+    }
+  );
 
   if (response.ok) {
     const data = await response.json();
