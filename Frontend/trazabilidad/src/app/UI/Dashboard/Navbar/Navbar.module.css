@@ -1,0 +1,36 @@
+.navbar {
+    background-color: #000;
+    display: flex; 
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    height: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 200)
+}
+
+.logoContainer {
+  display: flex; 
+  justify-content: space-between;
+  object-fit: cover;
+  align-items: center;
+}
+
+
+.logoImage{
+    max-height: 35px;
+    width: auto;
+    height: auto; 
+}
+
+.logoText{
+    color: aliceblue;
+    font-size: 1.125rem;
+    font-weight: 600; 
+    margin: 5px; 
+}
+
+
+.accesContainer {
+    margin-left: auto;
+    display: flex; 
+}
