@@ -2,10 +2,13 @@ package com.ciberfisicos1.trazabilidad.service.tarea_service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.ciberfisicos1.trazabilidad.errors.exceptions.ResourceNotFoundException;
 import com.ciberfisicos1.trazabilidad.errors.exceptions.IllegalArgumentException;
+import com.ciberfisicos1.trazabilidad.model.dto.TareaDTO;
 import com.ciberfisicos1.trazabilidad.model.proceso.Proceso;
 import com.ciberfisicos1.trazabilidad.model.tarea.Tarea;
 import com.ciberfisicos1.trazabilidad.repository.tarea_repository.TareaRepository;
@@ -23,20 +26,20 @@ public class TareaService {
     private final EncryptionService encryptionService;
     private static final Long SYSTEM_USER_ID = 999L;
 
-    public ResponseEntity<List<Tarea>> getAllTareas() {
+    public ResponseEntity<List<TareaDTO>> getAllTareas() {
         List<Tarea> tareas = tareaRepository.findAll();
         tareas.forEach(this::decryptTarea);
-        return ResponseEntity.ok(tareas);
+        List<TareaDTO> tareaDTOs = tareas.stream().map(Tarea::toDTO).collect(Collectors.toList());
+        return ResponseEntity.ok(tareaDTOs);
     }
 
-    public ResponseEntity<Tarea> getTareaById(Long tareaId) {
+    public ResponseEntity<TareaDTO> getTareaById(Long tareaId) {
         Optional<Tarea> tarea = tareaRepository.findById(tareaId);
         tarea.ifPresent(this::decryptTarea);
-        return tarea.map(ResponseEntity::ok)
-                    .orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(tarea.map(Tarea::toDTO).orElseThrow(() -> new ResourceNotFoundException("Actividad no encontrada con id: " + tareaId)));
     }
 
-    public ResponseEntity<Tarea> addTarea(Map<String, Object> tareaMap) {
+    public ResponseEntity<TareaDTO> addTarea(Map<String, Object> tareaMap) {
         Tarea tarea = new Tarea();
         tarea.setName((String) tareaMap.get("name"));
         tarea.setDescription((String) tareaMap.get("description"));
@@ -52,10 +55,10 @@ public class TareaService {
         encryptTarea(tarea);
         Tarea savedTarea = tareaRepository.save(tarea);
         decryptTarea(savedTarea);
-        return ResponseEntity.ok(savedTarea);
+        return ResponseEntity.ok(savedTarea.toDTO());
     }
 
-    public ResponseEntity<Tarea> updateTarea(Map<String, Object> tareaMap, Long tareaId) {
+    public ResponseEntity<TareaDTO> updateTarea(Map<String, Object> tareaMap, Long tareaId) {
         Optional<Tarea> existingTarea = tareaRepository.findById(tareaId);
         if (existingTarea.isPresent()) {
             Tarea updatedTarea = existingTarea.get();
@@ -64,7 +67,7 @@ public class TareaService {
             encryptTarea(updatedTarea);
             Tarea savedTarea = tareaRepository.save(updatedTarea);
             decryptTarea(savedTarea);
-            return ResponseEntity.ok(savedTarea);
+            return ResponseEntity.ok(savedTarea.toDTO());
         } else {
             throw new ResourceNotFoundException("Tarea no encontrada con id: " + tareaId);
         }

@@ -1,10 +1,11 @@
+// src/app/Dashboard/Analisis/page.tsx
 'use client';
 
 import { useState } from 'react';
 import DatePicker from 'react-multi-date-picker';
-import 'react-multi-date-picker/styles/backgrounds/bg-dark.css'; // Importa el estilo de fondo oscuro
-import BarChart from '../../components/BarChart';
-import Styles from '../../UI/Dashboard/Analisis.module.css';
+import 'react-multi-date-picker/styles/backgrounds/bg-dark.css';
+import BarChart from '../../UI/Dashboard/Analisis/Barchart';
+import Styles from '../../UI/Dashboard/Analisis/Analisis.module.css';
 const AnalisisPage = () => {
   const [isActive, setIsActive] = useState(false);
   const handleSelectionClick = () => {
@@ -104,4 +105,4 @@ const AnalisisPage = () => {
   );
 };
 
-export default ProcesoComponent;
+export default AnalisisPage;

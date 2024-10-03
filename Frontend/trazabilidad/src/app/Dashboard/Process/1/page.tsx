@@ -1,17 +1,17 @@
 'use client'; 
 
-import Styles from "../../../UI/Dashboard/Process.module.css"
+import Styles from "@/app/UI/Dashboard/Process.module.css"
 import Image from 'next/image';
-import robotIcon from '../../../UI/images/Dashboard/robot_ico.png';
-import onromIcon from '../../../UI/images/Dashboard/onrom.png' 
-import historyIcon from '../../../UI/images/Dashboard/history_ico.png'
-import detailsIcon from '../../../UI/images/Dashboard/view_more.png'
-import expandIcon from '../../../UI/images/Dashboard/expand.png'
-import collapseIcon from '../../../UI/images/Dashboard/collapse.png'
+import robotIcon from '@/app/UI/images/Dashboard/robot_ico.png';
+import onromIcon from '@/app/UI/images/Dashboard/onrom.png' 
+import historyIcon from '@/app/UI/images/Dashboard/history_ico.png'
+import detailsIcon from '@/app/UI/images/Dashboard/view_more.png'
+import expandIcon from '@/app/UI/images/Dashboard/expand.png'
+import collapseIcon from '@/app/UI/images/Dashboard/collapse.png'
 import React, {useState} from 'react'; 
-import PieChart from "../../../components/PieChart"
-import LineChart from "../../../components/LineChart"
-import BarChart from "../../../components/BarChart"
+import PieChart from "@/app/UI/Dashboard/Analisis/Piechart"
+import LineChart from "@/app/UI/Dashboard/Analisis/Linechart"
+import BarChart from "@/app/UI/Dashboard/Analisis/Barchart"
 
 const Process = () => {
     const [isRobotsActive, setIsRobotsActive] = useState(true); 

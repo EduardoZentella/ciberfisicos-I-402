@@ -4,15 +4,18 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import java.util.*;
+
+import com.ciberfisicos1.trazabilidad.model.dto.ActividadDTO;
 import com.ciberfisicos1.trazabilidad.model.robot.Robot;
 import com.ciberfisicos1.trazabilidad.model.tarea.Tarea;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.*;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Actividad {
 
     @Id
@@ -30,11 +33,22 @@ public class Actividad {
     @ManyToOne
     @NotNull
     @JoinColumn(name = "Tarea_Id", referencedColumnName = "Tarea_Id", nullable = false)
-    @JsonIgnore
+    @JsonManagedReference
     private Tarea tarea;
 
     @ManyToMany(mappedBy = "actividades")
     @Builder.Default
     @JsonIgnore
     private List<Robot> robots = new ArrayList<>();
+
+    public ActividadDTO toDTO() {
+        ActividadDTO dto = new ActividadDTO();
+        dto.setActividadId(this.actividadId);
+        dto.setName(this.name);
+        dto.setDescription(this.description);
+        dto.setTareaId(this.tarea.getTareaId());
+        return dto;
+    }
+    
+    // Getters y Setters
 }
