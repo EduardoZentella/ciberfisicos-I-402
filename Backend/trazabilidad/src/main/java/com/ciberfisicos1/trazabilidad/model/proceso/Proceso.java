@@ -3,6 +3,8 @@ package com.ciberfisicos1.trazabilidad.model.proceso;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+
+import com.ciberfisicos1.trazabilidad.model.lote.Lote;
 import com.ciberfisicos1.trazabilidad.model.robot.Robot;
 import com.ciberfisicos1.trazabilidad.model.tarea.Tarea;
 import com.fasterxml.jackson.annotation.*;
@@ -32,6 +34,11 @@ public class Proceso {
     @Builder.Default
     @JsonBackReference
     private List<Tarea> tareas = new ArrayList<>();
+
+    @OneToMany(mappedBy = "proceso", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    @JsonBackReference
+    private List<Lote> lotes = new ArrayList<>();
 
     @ManyToMany(mappedBy = "procesos")
     @Builder.Default
