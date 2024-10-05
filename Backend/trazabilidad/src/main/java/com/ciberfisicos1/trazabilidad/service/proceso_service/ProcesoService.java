@@ -70,6 +70,15 @@ public class ProcesoService {
         if (source.getDescription() != null) {
             target.setDescription(source.getDescription());
         }
+        if (source.getIniDate() != null) {
+            target.setIniDate(source.getIniDate());
+        }
+        if (source.getEndDate() != null) {
+            target.setEndDate(source.getEndDate());
+        }
+        if (source.getStatus() != null) {
+            target.setStatus(source.getStatus());
+        }
     }
 
     private void encryptProceso(Proceso proceso) {
@@ -83,6 +92,12 @@ public class ProcesoService {
             throw new IllegalArgumentException("La descripción del proceso no puede estar vacía o nula");
         } else {
             proceso.setDescription(encryptionService.encryptData(proceso.getDescription(), SYSTEM_USER_ID));
+        }
+
+        if (proceso.getStatus() == null || proceso.getStatus().isEmpty()) {
+            throw new IllegalArgumentException("El estado del proceso no puede estar vacío o nulo");
+        } else {
+            proceso.setStatus(encryptionService.encryptData(proceso.getStatus(), SYSTEM_USER_ID));
         }
     }
     
@@ -98,6 +113,12 @@ public class ProcesoService {
             throw new IllegalArgumentException("La descripción del proceso no puede estar vacía o nula");
         } else {
             proceso.setDescription(encryptionService.decryptData(proceso.getDescription(), SYSTEM_USER_ID));
+        }
+
+        if (proceso.getStatus() == null || proceso.getStatus().isEmpty()) {
+            throw new IllegalArgumentException("El estado del proceso no puede estar vacío o nulo");
+        } else {
+            proceso.setStatus(encryptionService.decryptData(proceso.getStatus(), SYSTEM_USER_ID));
         }
     }    
 }

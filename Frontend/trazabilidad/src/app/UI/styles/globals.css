@@ -3,17 +3,16 @@
 @tailwind utilities;
 
 :root {
-  --bg: #ffffff;
-  --bgSoft: #f5f5f5;
-  --text: #171717;
-  --textSoft: #6b6b6b;
+  --bg: #ffff;
+    --bgSoft: #1a1a1a;
+    --text: #ededed;
+    --textSoft: #bcbcbc;
 }
-
 
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0a0a0a;
+    --bg: #edf4f7;
     --bgSoft: #1a1a1a;
     --text: #ededed;
     --textSoft: #bcbcbc;

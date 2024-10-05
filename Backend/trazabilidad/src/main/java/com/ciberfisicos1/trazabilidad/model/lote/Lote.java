@@ -2,8 +2,9 @@ package com.ciberfisicos1.trazabilidad.model.lote;
 
 import com.ciberfisicos1.trazabilidad.model.proceso.Proceso;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import com.ciberfisicos1.trazabilidad.model.dto.LoteDTO;
 import com.ciberfisicos1.trazabilidad.model.pieza.Pieza;
@@ -17,9 +18,8 @@ import java.util.*;
 public class Lote {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "Lote_Id")
     private Long loteId;
-
-    private Long procesoId;
 
     @OneToMany(mappedBy = "lote", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
@@ -27,7 +27,7 @@ public class Lote {
     private List<Pieza> piezas = new ArrayList<>();
 
     @ManyToOne
-    @NotNull
+    @Nonnull
     @JoinColumn(name = "Proceso_Id", referencedColumnName = "Proceso_Id", nullable = false)
     private Proceso proceso;
 

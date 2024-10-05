@@ -6,11 +6,18 @@ import DatePicker from 'react-multi-date-picker';
 import 'react-multi-date-picker/styles/backgrounds/bg-dark.css';
 import BarChart from '../../UI/Dashboard/Analisis/Barchart';
 import Styles from '../../UI/Dashboard/Analisis/Analisis.module.css';
+import { useLanguage } from '../../lib/context/LanguageContext';
+
+
 const AnalisisPage = () => {
+
   const [isActive, setIsActive] = useState(false);
   const handleSelectionClick = () => {
     setIsActive(!isActive);
   };
+
+  const { currentTranslations, changeLanguage, currentLanguage } = useLanguage(); 
+
 
   // Crear un array con 20 elementos
   const items = Array.from({ length: 20 }, (_, i) => ({
@@ -25,14 +32,12 @@ const AnalisisPage = () => {
   return (
     <div
       style={{
-        backgroundColor: '#d4d8de',
-        height: '100vh',
         width: 'auto',
         margin: '15px',
       }}
     >
       <div className={Styles.title}>
-        <p>Analysis</p>
+        <p>{currentTranslations.analysis}</p>
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'row', padding: '15px' }}>
@@ -40,26 +45,26 @@ const AnalisisPage = () => {
           <div className={Styles.box}>
             <form action="a">
               <div className={Styles.input_box}>
-                <input type="text" placeholder="Search..." />
+                <input type="text" placeholder={currentTranslations.search} />
                 <DatePicker
                   className="bg-dark" // Usa tu clase CSS personalizada
                   format="DD/MM/YYYY"
                   style={{ fontSize: '15px', color: '#112c4e', margin: '10px' }}
-                  placeholder="Filter By Date"
+                  placeholder={currentTranslations.filter}
                 />
 
                 <div
                   className={Styles.selection}
                   onClick={handleSelectionClick}
                 >
-                  Selection
+                  {currentTranslations.selection}
                 </div>
                 <div
                   className={`${Styles.categories} ${isActive ? Styles.active : ''}`}
                 >
-                  <p className={Styles.option}>Processes</p>
-                  <p className={Styles.option}>Tasks</p>
-                  <p className={Styles.option}>Activities</p>
+                  <p className={Styles.option}>{currentTranslations.processes}</p>
+                  <p className={Styles.option}>{currentTranslations.tasks}</p>
+                  <p className={Styles.option}>{currentTranslations.activities}</p>
                   <p className={Styles.option}>Robots</p>
                 </div>
               </div>

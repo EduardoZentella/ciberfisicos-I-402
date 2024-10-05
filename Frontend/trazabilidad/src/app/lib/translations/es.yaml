@@ -20,9 +20,9 @@ qualityRate: Porcentaje de calidad
 timeAverage: Tiempo promedio del proceso
 succesRate: Tasa de éxtio del proceso
 #Analysis
-search: Buscar 
+search: Buscar...
 selection: Selección 
 filter: Filtrar por fecha
 tasks: Tareas
-acitivities: Actividades
+activities: Actividades
 robots: Robots

@@ -8,5 +8,5 @@ import com.ciberfisicos1.trazabilidad.model.pieza.Pieza;
 @Repository
 
 public interface PiezaRepository extends JpaRepository<Pieza, Long> {
-    List<Pieza> findByLoteId(Long loteId);
+    List<Pieza> findByLote_LoteId(Long loteId);
 }

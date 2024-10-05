@@ -8,14 +8,14 @@ import { useLanguage } from '../lib/context/LanguageContext';
 
 const DashboardHomePage = () => {
 
-  const { currentTranslations, changeLanguage, currentLanguage } = 
-    useLanguage(); 
+  const { currentTranslations, changeLanguage, currentLanguage } = useLanguage(); 
 
   return (
-    <div style={{backgroundColor:'#d9d9de', height: "100vh"}}>
+    <div style={{height: "100vh"}}>
 
       <div className={cardStyles.title}>
-        {currentTranslations.processes}
+        <p>{currentTranslations.processes}</p>
+        
       </div>
       
       <div className={cardStyles.cardWrapper}>

@@ -11,6 +11,10 @@ import historyIcon from '@/app/UI/images/Dashboard/history_ico.png'
 import detailsIcon from '@/app/UI/images/Dashboard/view_more.png'
 import expandIcon from '@/app/UI/images/Dashboard/expand.png'
 import collapseIcon from '@/app/UI/images/Dashboard/collapse.png'
+import warningsIcon from '@/app/UI/images/Dashboard/warning_ico.png'
+import successIcon from '@/app/UI/images/Dashboard/rate_success.png'
+import qualityIcon from '@/app/UI/images/Dashboard/quality_ico.png'
+import timeIcon from '@/app/UI/images/Dashboard/time_avg.png'
 import React, {useState} from 'react'; 
 import PieChart from "@/app/UI/Dashboard/Analisis/Piechart"
 import LineChart from "@/app/UI/Dashboard/Analisis/Linechart"
@@ -50,7 +54,7 @@ const Process = () => {
 
     return (
     
-      <div style={{backgroundColor: '#d4d8de', height: '100vh', width: 'auto', margin: '15px'}}>
+      <div style={{width: 'auto', margin: '15px'}}>
         {/*Titulo del proceso*/}
         <div className={Styles.process}> <p>{currentTranslations.process}: Nombre del proceso</p> </div>
         {/*Grid*/}
@@ -95,15 +99,9 @@ const Process = () => {
             {/*Warnings*/}
             <div className={Styles.container} style={{gridColumn:1, gridRow:3, marginTop: '20px'}}>
               <div className={Styles.containerButton}>
+                <Image src={warningsIcon} alt="" className={Styles.iconButton}/>
                 <h1 style={{marginLeft: '10px'}}>{currentTranslations.warnings}</h1>
-                <div className={Styles.overlay}>
-                  <a href='/Dashboard/Analisis'>
-                    <button  style={{ height:'50px'}}>
-                      <Image src={detailsIcon} alt="" className={Styles.iconButton}/>
-                    </button>
-                  </a>
-            
-                </div>
+                
               </div>
 
               <div className={Styles.chartContainer} style={{height: '100px'}}>
@@ -118,7 +116,7 @@ const Process = () => {
           <div style={{gridColumn:2}}>
             {/*Robots*/}
             <div className={Styles.container} style={{gridRow:2, gridColumn:2}}>
-              <div className={Styles.containerButton}>
+              <div className={Styles.containerButton} style={{borderRadius: isRobotsActive ? '10px 10px 0px 0px' : '10px'}}>
                 <Image src={robotIcon} alt="" className={Styles.iconButton}/>
                 Robots
                 <div className={Styles.overlay}>
@@ -162,6 +160,8 @@ const Process = () => {
             {/*Process Rate*/}
             <div className={Styles.container} style={{marginTop: '20px', height: isRobotsActive ? 'auto': '80%'}}>
               <div className={Styles.containerButton}>
+              <Image src={successIcon} alt="" className={Styles.iconButton}/>
+
                 <h1 style={{marginLeft: '10px'}}>{currentTranslations.succesRate}</h1>
                 <div className={Styles.overlay}>
                   <a href='/Dashboard/Analisis'>
@@ -173,7 +173,7 @@ const Process = () => {
                 </div>
               </div>
 
-              <div className={Styles.chartContainer} style={{ height: isRobotsActive ? '180px' : '100%', transition: 'height 0.3s' }}>
+              <div className={Styles.chartContainer} style={{ height: isRobotsActive ? '180px' : '90%' }}>
                 <BarChart />
             </div>
 
@@ -185,6 +185,7 @@ const Process = () => {
           {/*Grafica de pastel*/}
             <div className={Styles.container} style={{gridColumn:3, gridRow:2}}>
               <div className={Styles.containerButton}>
+              <Image src={qualityIcon} alt="" className={Styles.iconButton}/>
                 <h1 style={{marginLeft: '10px'}}>{currentTranslations.qualityRate}</h1>
                 <div className={Styles.overlay}>
                   <a href='/Dashboard/Dashboard/Analisis'>
@@ -203,8 +204,10 @@ const Process = () => {
               </div>
             </div>  
           {/*Grafica de tiempo proceso*/}
-            <div className={Styles.container} style={{gridColumn:2, gridRow:3}}>
+            <div className={Styles.container} style={{gridColumn:2, gridRow:3, marginTop: '20px'}}>
               <div className={Styles.containerButton}>
+              <Image src={timeIcon} alt="" className={Styles.iconButton}/>
+
                 <h1 style={{marginLeft: '10px'}}>{currentTranslations.timeAverage}</h1>
                 <div className={Styles.overlay}>
                   <a href='/Dashboard/Analisis'>

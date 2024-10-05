@@ -1,7 +1,7 @@
 package com.ciberfisicos1.trazabilidad.model.proceso;
 
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import com.ciberfisicos1.trazabilidad.model.lote.Lote;
@@ -23,12 +23,21 @@ public class Proceso {
     @Column(name = "Proceso_Id")
     private Long procesoId;
 
-    @NotNull
+    @Nonnull
     @Column(name = "Name", nullable = false)
     private String name;
 
     @Column(name = "Description")
     private String description;
+
+    @Column(name = "Ini_Date")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private Date iniDate;
+    @Column(name = "End_Date")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private Date endDate;
+    @Column(name = "Status")
+    private String status;
 
     @OneToMany(mappedBy = "proceso", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default

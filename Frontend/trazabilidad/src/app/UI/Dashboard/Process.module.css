@@ -55,6 +55,9 @@
     transition: all 0.8s ease-in-out;
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(7, 7, 49, 0.844);
+    overflow: hidden;
+    width: 1fr; 
+    background-color: #fff;
 
 }
 
@@ -112,9 +115,11 @@
     align-items: center;
     display: block;
     flex-direction: column;
-    background-color: #f1f1f1;
+    background-color: #fff;
     color: #000; 
     transition: opacity 0.3s ease, height 0.3s ease;
+    border-radius: 15px;
+    overflow: hidden ;
 
 }
 
@@ -129,14 +134,13 @@
     flex-direction: column;
     align-items: center;
     padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 20px 10px rgba(202, 202, 202, 0.2);
+    border-radius: 120px;
 }
 
 .batteryLevel{
     position: relative;
-    width: 150px;
-    height: 60px;
+    width: 100px;
+    height: 40px;
     background-color: #e4e4e4;
     border-radius: 30px;
     overflow: hidden;
@@ -224,13 +228,12 @@
 
 .chartContainer{
     overflow: auto;
-    width: auto;  
     height: auto; 
     display: flex;
     flex: 0 0 auto;
     flex-direction: column;
     align-items: center;
-    background-color: #f1f1f1; 
+    background-color: #fff; 
     box-shadow: 0 2px 5px rgba(7, 7, 49, 0.844);  
 }
 
@@ -239,6 +242,5 @@
 }
 
 .warningContainer {
-    background-color: #f1f1f1;
     color: #000; 
 }
