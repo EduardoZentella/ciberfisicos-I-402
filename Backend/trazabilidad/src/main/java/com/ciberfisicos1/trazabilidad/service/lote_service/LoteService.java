@@ -34,7 +34,7 @@ public class LoteService {
     }
 
     public ResponseEntity<List<LoteDTO>> getLoteByProcesoId(Long procesoId) {
-        List<Lote> lotes = loteRepository.findByProcesoId(procesoId);
+        List<Lote> lotes = loteRepository.findByProceso_ProcesoId(procesoId);
         if (lotes.isEmpty()) {
             throw new ResourceNotFoundException("Proceso no encontrado con id: " + procesoId);
         }

@@ -3,8 +3,9 @@ package com.ciberfisicos1.trazabilidad.model.tarea;
 import com.ciberfisicos1.trazabilidad.model.proceso.Proceso;
 import com.ciberfisicos1.trazabilidad.model.robot.Robot;
 import com.fasterxml.jackson.annotation.*;
+
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ public class Tarea {
     @Column(name = "Tarea_Id")
     private Long tareaId;
 
-    @NotNull
+    @Nonnull
     @Column(name = "Name", nullable = false)
     private String name;
 
@@ -32,7 +33,7 @@ public class Tarea {
     private String description;
 
     @ManyToOne
-    @NotNull
+    @Nonnull
     @JoinColumn(name = "Proceso_Id", referencedColumnName = "Proceso_Id", nullable = false)
     private Proceso proceso;
 

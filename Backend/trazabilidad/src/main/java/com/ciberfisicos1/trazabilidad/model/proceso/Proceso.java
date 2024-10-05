@@ -1,7 +1,7 @@
 package com.ciberfisicos1.trazabilidad.model.proceso;
 
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import com.ciberfisicos1.trazabilidad.model.lote.Lote;
@@ -23,7 +23,7 @@ public class Proceso {
     @Column(name = "Proceso_Id")
     private Long procesoId;
 
-    @NotNull
+    @Nonnull
     @Column(name = "Name", nullable = false)
     private String name;
 

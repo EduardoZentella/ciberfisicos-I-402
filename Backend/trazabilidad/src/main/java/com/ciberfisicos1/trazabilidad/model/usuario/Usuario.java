@@ -4,8 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.Column;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -21,10 +21,10 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Usuario_Id")
     private Long usuarioId;
-    @NotNull
+    @Nonnull
     @Column(name = "Email", nullable = false)
     private String email;
-    @NotNull
+    @Nonnull
     @Column(name = "Contraseña", nullable = false)
     private String contraseña;
     @Column(name = "Role")

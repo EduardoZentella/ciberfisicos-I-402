@@ -1,6 +1,6 @@
 package com.ciberfisicos1.trazabilidad.model.authentication;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.annotation.Nonnull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -12,10 +12,10 @@ import lombok.Builder;
 @Builder
 public class AuthenticationRequest {
 
-    @NotNull
+    @Nonnull
     private String email;
 
-    @NotNull
+    @Nonnull
     private String contraseña;
 
     // Getters y Setters

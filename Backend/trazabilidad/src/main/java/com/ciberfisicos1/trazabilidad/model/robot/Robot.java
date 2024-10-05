@@ -6,8 +6,8 @@ import com.ciberfisicos1.trazabilidad.model.proceso.Proceso;
 import com.ciberfisicos1.trazabilidad.model.tarea.Tarea;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity
@@ -23,7 +23,7 @@ public class Robot {
     private Long robotId;
     @Column(name = "Name") 
     private String name;
-    @NotNull
+    @Nonnull
     @Column(name = "Type",nullable = false)
     private String type;
     @ManyToMany

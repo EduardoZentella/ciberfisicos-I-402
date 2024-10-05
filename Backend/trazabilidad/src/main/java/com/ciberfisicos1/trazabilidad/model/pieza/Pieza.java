@@ -4,8 +4,9 @@ package com.ciberfisicos1.trazabilidad.model.pieza;
 import com.ciberfisicos1.trazabilidad.model.dto.PiezaDTO;
 import com.ciberfisicos1.trazabilidad.model.lote.Lote;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 
@@ -18,13 +19,13 @@ import lombok.*;
 public class Pieza {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "Pieza_Id")
     private Long piezaId;
-
-    private Long loteId;
+    @Column(name = "Type")
     private String type;
 
     @ManyToOne
-    @NotNull
+    @Nonnull
     @JoinColumn(name = "Lote_Id", referencedColumnName = "Lote_Id", nullable = false)
     private Lote lote;
 

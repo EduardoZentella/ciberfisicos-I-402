@@ -37,7 +37,7 @@ public class PiezaService {
     }
 
     public ResponseEntity<List<PiezaDTO>> getPiezaByLoteId(Long loteId) {
-        List<Pieza> piezas = piezaRepository.findByLoteId(loteId);
+        List<Pieza> piezas = piezaRepository.findByLote_LoteId(loteId);
         piezas.forEach(this::decryptPieza);
         if (piezas.isEmpty()) {
             throw new ResourceNotFoundException("Lote no encontrado con id: " + loteId);

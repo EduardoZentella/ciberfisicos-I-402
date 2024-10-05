@@ -1,7 +1,7 @@
 package com.ciberfisicos1.trazabilidad.model.historial;
 
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity
@@ -14,15 +14,15 @@ public class Historial {
     @EmbeddedId
     private HistorialId historialId;
 
-    @NotNull
+    @Nonnull
     @Column(name = "Contraseña", nullable = false)
     private String contraseña;
 
-    @NotNull
+    @Nonnull
     @Column(name = "Master_Key", nullable = false)
     private String masterKey;
 
-    @NotNull
+    @Nonnull
     @Column(name = "Version", nullable = false)
     private String version;
 

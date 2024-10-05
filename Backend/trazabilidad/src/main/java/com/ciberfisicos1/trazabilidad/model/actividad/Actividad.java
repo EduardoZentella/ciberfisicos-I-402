@@ -1,7 +1,7 @@
 package com.ciberfisicos1.trazabilidad.model.actividad;
 
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import java.util.*;
 
@@ -23,7 +23,7 @@ public class Actividad {
     @Column(name = "Actividad_Id")
     private Long actividadId;
 
-    @NotNull
+    @Nonnull
     @Column(name = "Name", nullable = false)
     private String name;
 
@@ -31,7 +31,7 @@ public class Actividad {
     private String description;
 
     @ManyToOne
-    @NotNull
+    @Nonnull
     @JoinColumn(name = "Tarea_Id", referencedColumnName = "Tarea_Id", nullable = false)
     @JsonManagedReference
     private Tarea tarea;
