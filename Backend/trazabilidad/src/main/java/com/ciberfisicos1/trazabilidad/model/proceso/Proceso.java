@@ -41,12 +41,12 @@ public class Proceso {
 
     @OneToMany(mappedBy = "proceso", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    @JsonBackReference
+    @JsonBackReference(value = "proceso-tareas")
     private List<Tarea> tareas = new ArrayList<>();
 
     @OneToMany(mappedBy = "proceso", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    @JsonBackReference
+    @JsonBackReference(value = "proceso-lotes")
     private List<Lote> lotes = new ArrayList<>();
 
     @ManyToMany(mappedBy = "procesos")

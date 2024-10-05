@@ -4,9 +4,29 @@ import cardStyles from '../UI/Dashboard/Processes Menu/Card.module.css'
 import Image from 'next/image';
 import processImage from '../UI/images/Home/home_1.jpg'; 
 import { useLanguage } from '../lib/context/LanguageContext';
-
+import { Proceso} from '../lib/models'
+import RestHandler from '../lib/rest'
+import {useEffect, useState} from 'react'
 
 const DashboardHomePage = () => {
+
+  const[procesos, setProcesos] = useState<Proceso[]>([]); 
+
+  useEffect(() => {
+    const fetchProcesos = async () => {
+      try{
+        const data = await RestHandler<Proceso[]>(
+          '/procesos', 
+          'Proceso', 
+          'GET'
+        );
+        setProcesos(data); 
+      } catch (error) {
+        console.error('Error fetching procesos', error);
+      }
+    }; 
+    fetchProcesos(); 
+  }, []); 
 
   const { currentTranslations, changeLanguage, currentLanguage } = useLanguage(); 
 
@@ -19,6 +39,7 @@ const DashboardHomePage = () => {
       </div>
       
       <div className={cardStyles.cardWrapper}>
+
         <div className={cardStyles.card}>
           <div className={cardStyles.imgArea}>
             <Image src={processImage} alt=""/>
@@ -34,6 +55,25 @@ const DashboardHomePage = () => {
           <h4>Transporte de componentes y clasificación de piezas mediante robots manipuladores</h4>
         </div>
         </div>
+
+        <div className={cardStyles.card}>
+          <div className={cardStyles.imgArea}>
+            <Image src={processImage} alt=""/>
+            <div className={cardStyles.overlay}>
+              <a href='/Dashboard/Process/'>
+                <button className={cardStyles.viewDetails}>{currentTranslations.viewDetails}</button>
+              </a>
+            </div>
+          </div>
+          <div className={cardStyles.info}>
+          <h3>Smart Track</h3>
+          <p>Smart Factory Tec</p>
+          <h4>Transporte de componentes y clasificación de piezas mediante robots manipuladores</h4>
+        </div>
+        </div>
+
+
+        
       </div>   
     
     </div>
