@@ -32,6 +32,11 @@ public class ProcesoController {
         return procesoService.getProcesoById(id);
     }
 
+    @GetMapping("/status")
+    public ResponseEntity<List<Proceso>> getProcesoByStatus() {
+        return procesoService.getProcesoByStatus();
+    }
+
     @PostMapping
     public ResponseEntity<Proceso> addProceso(@RequestBody Proceso proceso) {
         return procesoService.addProceso(proceso);

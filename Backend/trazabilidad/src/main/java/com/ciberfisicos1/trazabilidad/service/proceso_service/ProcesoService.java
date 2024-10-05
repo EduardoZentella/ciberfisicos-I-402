@@ -39,6 +39,12 @@ public class ProcesoService {
         return ResponseEntity.ok(savedProceso);
     }
 
+    public ResponseEntity<List<Proceso>> getProcesoByStatus() {
+        List<Proceso> procesos = procesoRepository.findProcesoByStatusDecrypted(encryptionService);
+        procesos.forEach(this::decryptProceso);
+        return ResponseEntity.ok(procesos);
+    }
+
     public ResponseEntity<Proceso> updateProceso(Proceso proceso, Long procesoId) {
         Optional<Proceso> existingProceso = procesoRepository.findById(procesoId);
         if (existingProceso.isPresent()) {
@@ -70,6 +76,9 @@ public class ProcesoService {
         if (source.getDescription() != null) {
             target.setDescription(source.getDescription());
         }
+        if  (source.getLocation() != null) {
+            target.setLocation(source.getLocation());
+        }
         if (source.getIniDate() != null) {
             target.setIniDate(source.getIniDate());
         }
@@ -94,6 +103,12 @@ public class ProcesoService {
             proceso.setDescription(encryptionService.encryptData(proceso.getDescription(), SYSTEM_USER_ID));
         }
 
+        if (proceso.getLocation() == null || proceso.getLocation().isEmpty()) {
+            throw new IllegalArgumentException("La ubicación del proceso no puede estar vacía o nula");
+        } else {
+            proceso.setLocation(encryptionService.encryptData(proceso.getLocation(), SYSTEM_USER_ID));
+        }
+
         if (proceso.getStatus() == null || proceso.getStatus().isEmpty()) {
             throw new IllegalArgumentException("El estado del proceso no puede estar vacío o nulo");
         } else {
@@ -113,6 +128,12 @@ public class ProcesoService {
             throw new IllegalArgumentException("La descripción del proceso no puede estar vacía o nula");
         } else {
             proceso.setDescription(encryptionService.decryptData(proceso.getDescription(), SYSTEM_USER_ID));
+        }
+
+        if (proceso.getLocation() == null || proceso.getLocation().isEmpty()) {
+            throw new IllegalArgumentException("La ubicación del proceso no puede estar vacía o nula");
+        } else {
+            proceso.setLocation(encryptionService.decryptData(proceso.getLocation(), SYSTEM_USER_ID));
         }
 
         if (proceso.getStatus() == null || proceso.getStatus().isEmpty()) {
