@@ -2,8 +2,11 @@
 
 import Styles from "@/app/UI/Dashboard/Process.module.css"
 import Image from 'next/image';
-import robotIcon from '@/app/UI/images/Dashboard/robot_ico.png';
-import onromIcon from '@/app/UI/images/Dashboard/onrom.png' 
+import robotIcon from '@/app/UI/images/Dashboard/Robot_ico.png';
+import omronIcon from '@/app/UI/images/Dashboard/Robots/omron.png'
+import omronArm from '@/app/UI/images/Dashboard/Robots/omron_cobot.png'
+import b1Icon from '@/app/UI/images/Dashboard/Robots/b1.jpg'
+import xArm from '@/app/UI/images/Dashboard/Robots/x-Arm.png'
 import historyIcon from '@/app/UI/images/Dashboard/history_ico.png'
 import detailsIcon from '@/app/UI/images/Dashboard/view_more.png'
 import expandIcon from '@/app/UI/images/Dashboard/expand.png'
@@ -12,8 +15,13 @@ import React, {useState} from 'react';
 import PieChart from "@/app/UI/Dashboard/Analisis/Piechart"
 import LineChart from "@/app/UI/Dashboard/Analisis/Linechart"
 import BarChart from "@/app/UI/Dashboard/Analisis/Barchart"
+import { useLanguage } from '../../lib/context/LanguageContext';
+
 
 const Process = () => {
+  
+    const { currentTranslations, changeLanguage, currentLanguage } = useLanguage(); 
+
     const [isRobotsActive, setIsRobotsActive] = useState(true); 
 
     const toggleRobots = () => {
@@ -34,17 +42,17 @@ const Process = () => {
     ];
 
     const robots = [
-      { id: 1, name: 'B1', description: 'Descripción de la tarea 1', battery: 100 },
-      { id: 2, name: 'Onrom', description: 'Descripción de la tarea 2', battery: 80},
-      { id: 3, name: 'X-Arm', description: 'Descripción de la tarea 3', battery: 50 },
-      { id: 4, name: 'Onrom Arm', description: 'Descripción de la tarea 4', battery: 10},
+      { id: 1, name: 'B1', description: 'Descripción de la tarea 1', battery: 100, img: omronIcon },
+      { id: 2, name: 'Onrom', description: 'Descripción de la tarea 2', battery: 80, img: omronIcon},
+      { id: 3, name: 'X-Arm', description: 'Descripción de la tarea 3', battery: 50, img: xArm },
+      { id: 4, name: 'Onrom Arm', description: 'Descripción de la tarea 4', battery: 10, img: omronArm},
     ];
 
     return (
     
       <div style={{backgroundColor: '#d4d8de', height: '100vh', width: 'auto', margin: '15px'}}>
         {/*Titulo del proceso*/}
-        <div className={Styles.process}> <p>Process</p> </div>
+        <div className={Styles.process}> <p>{currentTranslations.process}: Nombre del proceso</p> </div>
         {/*Grid*/}
         <div className={Styles.gridWrapper}>
         {/*Primera columna para tareas recientes y warnings*/}
@@ -54,7 +62,7 @@ const Process = () => {
 
               <div className={Styles.containerButton}>
                 <Image src={historyIcon} alt="" className={Styles.iconButton}/>
-                History
+                {currentTranslations.history}
                 <div className={Styles.overlay}>
                   <a href='/Dashboard/Analisis'>
                     <button  style={{ height:'50px'}}>
@@ -87,7 +95,7 @@ const Process = () => {
             {/*Warnings*/}
             <div className={Styles.container} style={{gridColumn:1, gridRow:3, marginTop: '20px'}}>
               <div className={Styles.containerButton}>
-                <h1 style={{marginLeft: '10px'}}>Warnings</h1>
+                <h1 style={{marginLeft: '10px'}}>{currentTranslations.warnings}</h1>
                 <div className={Styles.overlay}>
                   <a href='/Dashboard/Analisis'>
                     <button  style={{ height:'50px'}}>
@@ -118,11 +126,7 @@ const Process = () => {
                     <Image  src={isRobotsActive ? collapseIcon : expandIcon} alt="" className={Styles.iconButton}/>
                   </button>
            
-                  <a href='/Dashboard/Analisis'>
-                    <button  style={{ height:'50px'}}>
-                      <Image src={detailsIcon} alt="" className={Styles.iconButton}/>
-                    </button>
-                  </a>
+            
                 </div>
               </div>
 
@@ -130,7 +134,7 @@ const Process = () => {
                 {robots.map((robot) => (
                   <div key={robot.id}>
                     <div className={Styles.elementList}>
-                      <Image src={onromIcon} alt="" className={Styles.contentImage}/>
+                      <Image src={robot.img} alt="" className={Styles.contentImage}/>
                       <div>
                         <h1>{robot.name}</h1>
                         <h2>{robot.description}</h2>
@@ -158,7 +162,7 @@ const Process = () => {
             {/*Process Rate*/}
             <div className={Styles.container} style={{marginTop: '20px', height: isRobotsActive ? 'auto': '80%'}}>
               <div className={Styles.containerButton}>
-                <h1 style={{marginLeft: '10px'}}>Process Succes Rate</h1>
+                <h1 style={{marginLeft: '10px'}}>{currentTranslations.succesRate}</h1>
                 <div className={Styles.overlay}>
                   <a href='/Dashboard/Analisis'>
                     <button  style={{ height:'50px'}}>
@@ -181,7 +185,7 @@ const Process = () => {
           {/*Grafica de pastel*/}
             <div className={Styles.container} style={{gridColumn:3, gridRow:2}}>
               <div className={Styles.containerButton}>
-                <h1 style={{marginLeft: '10px'}}>Quality rate</h1>
+                <h1 style={{marginLeft: '10px'}}>{currentTranslations.qualityRate}</h1>
                 <div className={Styles.overlay}>
                   <a href='/Dashboard/Dashboard/Analisis'>
                     <button  style={{ height:'50px'}}>
@@ -201,7 +205,7 @@ const Process = () => {
           {/*Grafica de tiempo proceso*/}
             <div className={Styles.container} style={{gridColumn:2, gridRow:3}}>
               <div className={Styles.containerButton}>
-                <h1 style={{marginLeft: '10px'}}>Time Average Analysis</h1>
+                <h1 style={{marginLeft: '10px'}}>{currentTranslations.timeAverage}</h1>
                 <div className={Styles.overlay}>
                   <a href='/Dashboard/Analisis'>
                     <button  style={{ height:'50px'}}>

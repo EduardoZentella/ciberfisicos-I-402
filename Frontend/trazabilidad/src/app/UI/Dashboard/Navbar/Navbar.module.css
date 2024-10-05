@@ -20,6 +20,7 @@
     max-height: 35px;
     width: auto;
     height: auto; 
+    margin: 10px; 
 }
 
 .logoText{
@@ -33,4 +34,11 @@
 .accesContainer {
     margin-left: auto;
     display: flex; 
+}
+
+.accesContainer button{
+    background-color: rgb(238, 238, 237);
+    border-radius: 2px;
+    margin: 3px;
+    color: black; 
 }

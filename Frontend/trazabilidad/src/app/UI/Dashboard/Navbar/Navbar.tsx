@@ -19,14 +19,12 @@ const Navbar: React.FC = () => {
         <div className={styles.languageSwitcher}>
           <button
             onClick={() => changeLanguage('en')}
-            className={`${styles.languageButton} ${currentLanguage === 'en' ? styles.active : ''}`}
-          >
-            EN
+            className={`${styles.languageButton} ${currentLanguage === 'en' ? styles.active : ''}`}>
+            EN 
           </button>
           <button
             onClick={() => changeLanguage('es')}
-            className={`${styles.languageButton} ${currentLanguage === 'es' ? styles.active : ''}`}
-          >
+            className={`${styles.languageButton} ${currentLanguage === 'es' ? styles.active : ''}`}>
             ES
           </button>
         </div>

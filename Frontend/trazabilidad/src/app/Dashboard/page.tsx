@@ -1,14 +1,21 @@
 // src/app/Dashboard/page.tsx
-import cardStyles from '../UI/Dashboard/Card.module.css'
+'use client'; 
+import cardStyles from '../UI/Dashboard/Processes Menu/Card.module.css'
 import Image from 'next/image';
 import processImage from '../UI/images/Home/home_1.jpg'; 
+import { useLanguage } from '../lib/context/LanguageContext';
+
 
 const DashboardHomePage = () => {
+
+  const { currentTranslations, changeLanguage, currentLanguage } = 
+    useLanguage(); 
+
   return (
     <div style={{backgroundColor:'#d9d9de', height: "100vh"}}>
 
       <div className={cardStyles.title}>
-        Processes
+        {currentTranslations.processes}
       </div>
       
       <div className={cardStyles.cardWrapper}>
@@ -16,8 +23,8 @@ const DashboardHomePage = () => {
           <div className={cardStyles.imgArea}>
             <Image src={processImage} alt=""/>
             <div className={cardStyles.overlay}>
-              <a href='/Dashboard/Process/1'>
-                <button className={cardStyles.viewDetails}>View Details</button>
+              <a href='/Dashboard/Process/'>
+                <button className={cardStyles.viewDetails}>{currentTranslations.viewDetails}</button>
               </a>
             </div>
           </div>

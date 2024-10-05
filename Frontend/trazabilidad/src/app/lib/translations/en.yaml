@@ -9,3 +9,22 @@ email: Email
 password: Password
 rememberMe: Remember Me
 login: Login
+#Process page
+processes: Processes
+viewDetails: View Details
+#Dashboard: 
+process: Process
+history: History
+warnings: Warnings
+qualityRate: Quality Rate
+timeAverage: Time Average Analysis
+succesRate: Process Succes Rate
+#Analysis
+search: Search 
+selection: Selection 
+filter: Filter By Date
+tasks: Tasks
+acitivities: Activities
+robots: Robots
+
+
