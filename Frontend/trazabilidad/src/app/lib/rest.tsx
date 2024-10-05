@@ -44,6 +44,10 @@ const convertData = (data: any, type: string): DataType | DataType[] => {
           Proceso_Id: item.procesoid,
           Nombre: item.name,
           Descripcion: item.description,
+          Ini_Date: parseDate(item.iniDate),
+          End_Date: parseDate(item.endDate), 
+          Location: item.location,
+          Status: item.status,
         } as Proceso;
       case 'Tarea':
         return {

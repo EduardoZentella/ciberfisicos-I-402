@@ -30,6 +30,9 @@ public class Proceso {
     @Column(name = "Description")
     private String description;
 
+    @Column(name = "Location")
+    private String location;
+
     @Column(name = "Ini_Date")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private Date iniDate;

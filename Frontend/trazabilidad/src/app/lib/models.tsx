@@ -11,6 +11,10 @@ export interface Proceso {
   Proceso_Id: number;
   Nombre: string;
   Descripcion: string;
+  Ini_Date: Date; 
+  End_Date: Date; 
+  Status: string; 
+  Location: string; 
 }
 
 export interface Tarea {

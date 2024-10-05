@@ -2,11 +2,12 @@
 'use client'; 
 import cardStyles from '../UI/Dashboard/Processes Menu/Card.module.css'
 import Image from 'next/image';
-import processImage from '../UI/images/Home/home_1.jpg'; 
+import smartTrack_img from '../UI/images/Processes/home_1.jpg'; 
 import { useLanguage } from '../lib/context/LanguageContext';
 import { Proceso} from '../lib/models'
 import RestHandler from '../lib/rest'
 import {useEffect, useState} from 'react'
+
 
 const DashboardHomePage = () => {
 
@@ -30,6 +31,10 @@ const DashboardHomePage = () => {
 
   const { currentTranslations, changeLanguage, currentLanguage } = useLanguage(); 
 
+  const imagesPaths = {
+    'smartTrack': smartTrack_img,
+  } 
+
   return (
     <div style={{height: "100vh"}}>
 
@@ -40,42 +45,28 @@ const DashboardHomePage = () => {
       
       <div className={cardStyles.cardWrapper}>
 
-        <div className={cardStyles.card}>
-          <div className={cardStyles.imgArea}>
-            <Image src={processImage} alt=""/>
-            <div className={cardStyles.overlay}>
-              <a href='/Dashboard/Process/'>
-                <button className={cardStyles.viewDetails}>{currentTranslations.viewDetails}</button>
-              </a>
+        {/* Mapeamos los procesos*/}
+
+        <ul>
+          {procesos.map((proceso) => (
+            <div className={cardStyles.card}>
+              <div className={cardStyles.imgArea}>
+                <Image src={imagesPaths[proceso.Nombre]} alt=""/>
+                <div className={cardStyles.overlay}>
+                  <a href="/Dashboard/Process/">
+                    <button className={cardStyles.viewDetails}>{currentTranslations.viewDetails}</button>
+                  </a>
+                </div>
+              </div>
+              <div className={cardStyles.info}>
+                <h3>{proceso.Nombre}</h3>
+                <p>{proceso.Location}</p>
+                <h4>{proceso.Descripcion}</h4>
+              </div>
             </div>
-          </div>
-          <div className={cardStyles.info}>
-          <h3>Smart Track</h3>
-          <p>Smart Factory Tec</p>
-          <h4>Transporte de componentes y clasificación de piezas mediante robots manipuladores</h4>
-        </div>
-        </div>
-
-        <div className={cardStyles.card}>
-          <div className={cardStyles.imgArea}>
-            <Image src={processImage} alt=""/>
-            <div className={cardStyles.overlay}>
-              <a href='/Dashboard/Process/'>
-                <button className={cardStyles.viewDetails}>{currentTranslations.viewDetails}</button>
-              </a>
-            </div>
-          </div>
-          <div className={cardStyles.info}>
-          <h3>Smart Track</h3>
-          <p>Smart Factory Tec</p>
-          <h4>Transporte de componentes y clasificación de piezas mediante robots manipuladores</h4>
-        </div>
-        </div>
-
-
-        
-      </div>   
-    
+          ))}
+        </ul>
+      </div>  
     </div>
   );
 };
