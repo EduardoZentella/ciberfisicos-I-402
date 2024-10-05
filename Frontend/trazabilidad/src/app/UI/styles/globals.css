@@ -9,6 +9,8 @@
   --textSoft: #6b6b6b;
 }
 
+
+
 @media (prefers-color-scheme: dark) {
   :root {
     --bg: #0a0a0a;
