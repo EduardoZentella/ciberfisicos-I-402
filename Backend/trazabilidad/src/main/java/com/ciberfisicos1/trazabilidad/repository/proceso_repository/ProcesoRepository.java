@@ -10,7 +10,7 @@ import com.ciberfisicos1.trazabilidad.service.encryption_service.EncryptionServi
 
 @Repository
 public interface ProcesoRepository extends JpaRepository<Proceso, Long> {
-    @Query("SELECT p FROM Proceso p WHERE p.status != 'Done'")
+    @Query("SELECT p FROM Proceso p WHERE p.status = 'Done'")
     List<Proceso> findProcesoByStatus();
 
     default List<Proceso> findProcesoByStatusDecrypted(EncryptionService encryptionService) {
@@ -18,7 +18,7 @@ public interface ProcesoRepository extends JpaRepository<Proceso, Long> {
         return procesos.stream()
                 .filter(proceso -> {
                     String decryptedStatus = encryptionService.decryptData(proceso.getStatus(), 999L);
-                    return !"Done".equals(decryptedStatus);
+                    return "Done".equals(decryptedStatus);
                 })
                 .collect(Collectors.toList());
     }

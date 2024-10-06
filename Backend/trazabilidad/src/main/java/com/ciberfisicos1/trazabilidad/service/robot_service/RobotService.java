@@ -71,6 +71,9 @@ public class RobotService {
         if (source.getType() != null) {
             target.setType(source.getType());
         }
+        if (source.getCharge() != null){
+            target.setCharge(source.getCharge());
+        }
     }
 
     private void encryptRobot(Robot robot) {
@@ -85,6 +88,9 @@ public class RobotService {
         } else {
             robot.setType(encryptionService.encryptData(robot.getType(), SYSTEM_USER_ID));
         }
+        if (robot.getCharge() != null) {
+            robot.setCharge(encryptionService.encryptData(robot.getCharge(), SYSTEM_USER_ID));
+        }
     }
 
     private void decryptRobot(Robot robot) {
@@ -98,6 +104,9 @@ public class RobotService {
             throw new IllegalArgumentException("El tipo del robot no puede estar vacío o nulo");
         } else {
             robot.setType(encryptionService.decryptData(robot.getType(), SYSTEM_USER_ID));
+        }
+        if (robot.getCharge() != null) {
+            robot.setCharge(encryptionService.decryptData(robot.getCharge(), SYSTEM_USER_ID));
         }
     }
 }
