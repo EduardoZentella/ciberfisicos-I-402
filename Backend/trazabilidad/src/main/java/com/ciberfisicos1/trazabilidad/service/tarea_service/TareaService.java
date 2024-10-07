@@ -3,7 +3,6 @@ package com.ciberfisicos1.trazabilidad.service.tarea_service;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.ciberfisicos1.trazabilidad.errors.exceptions.ResourceNotFoundException;
@@ -16,6 +15,8 @@ import com.ciberfisicos1.trazabilidad.service.encryption_service.EncryptionServi
 import lombok.RequiredArgsConstructor;
 import com.ciberfisicos1.trazabilidad.repository.proceso_repository.ProcesoRepository;
 import java.util.Map;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +38,13 @@ public class TareaService {
         Optional<Tarea> tarea = tareaRepository.findById(tareaId);
         tarea.ifPresent(this::decryptTarea);
         return ResponseEntity.ok(tarea.map(Tarea::toDTO).orElseThrow(() -> new ResourceNotFoundException("Actividad no encontrada con id: " + tareaId)));
+    }
+
+    public ResponseEntity<List<TareaDTO>> getLast8Tareas() {
+        List<Tarea> tareas = tareaRepository.findTop8ByOrderByTareaIdDesc();
+        tareas.forEach(this::decryptTarea);
+        List<TareaDTO> tareaDTOs = tareas.stream().map(Tarea::toDTO).collect(Collectors.toList());
+        return ResponseEntity.ok(tareaDTOs);
     }
 
     public ResponseEntity<TareaDTO> addTarea(Map<String, Object> tareaMap) {
@@ -83,11 +91,30 @@ public class TareaService {
     }
 
     private void copyNonNullProperties(Map<String, Object> source, Tarea target) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
         if (source.get("name") != null) {
             target.setName((String) source.get("name"));
         }
         if (source.get("description") != null) {
             target.setDescription((String) source.get("description"));
+        }
+        if (source.get("iniDate") != null) {
+            try {
+                target.setIniDate(dateFormat.parse((String) source.get("iniDate")));
+            } catch (ParseException e) {
+                throw new IllegalArgumentException("Invalid date format for iniDate", e);
+            }
+        }
+        if (source.get("endDate") != null) {
+            try {
+                target.setEndDate(dateFormat.parse((String) source.get("endDate")));
+            } catch (ParseException e) {
+                throw new IllegalArgumentException("Invalid date format for endDate", e);
+            }
+        }
+        if (source.get("status") != null) {
+            target.setStatus((String) source.get("status"));
         }
         if (source.get("proceso") != null) {
             Long procesoId = ((Number) source.get("proceso")).longValue();
@@ -112,6 +139,9 @@ public class TareaService {
         } else {
             tarea.setDescription(encryptionService.encryptData(tarea.getDescription(), SYSTEM_USER_ID));
         }
+        if (tarea.getStatus() == null || tarea.getStatus().isEmpty()) {
+            throw new IllegalArgumentException("El statuto de la tarea no puede estar vaició o nulo ");
+        }
     }
 
     private void decryptTarea(Tarea tarea) {
@@ -125,6 +155,9 @@ public class TareaService {
             throw new IllegalArgumentException("La descripción de la tarea no puede estar vacía o nula");
         } else {
             tarea.setDescription(encryptionService.decryptData(tarea.getDescription(), SYSTEM_USER_ID));
+        }
+        if (tarea.getStatus() == null || tarea.getStatus().isEmpty()) {
+            throw new IllegalArgumentException("El statuto de la tarea no puede estar vaició o nulo ");
         }
     }
 }

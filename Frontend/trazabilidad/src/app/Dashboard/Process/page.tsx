@@ -15,12 +15,14 @@ import warningsIcon from '@/app/UI/images/Dashboard/warning_ico.png'
 import successIcon from '@/app/UI/images/Dashboard/rate_success.png'
 import qualityIcon from '@/app/UI/images/Dashboard/quality_ico.png'
 import timeIcon from '@/app/UI/images/Dashboard/time_avg.png'
-import React, {useState} from 'react'; 
+import React, {useEffect, useState} from 'react'; 
 import PieChart from "@/app/UI/Dashboard/Analisis/Piechart"
 import LineChart from "@/app/UI/Dashboard/Analisis/Linechart"
 import BarChart from "@/app/UI/Dashboard/Analisis/Barchart"
 import { useLanguage } from '../../lib/context/LanguageContext';
-
+import {Tarea} from '../../lib/models'
+import {Robot} from '../../lib/models'
+import RestHandler from '../../lib/rest'
 
 const Process = () => {
   
@@ -32,25 +34,56 @@ const Process = () => {
       setIsRobotsActive(!isRobotsActive)
     }
 
-    const tasks = [
-      { id: 1, name: 'Tarea 1', description: 'Descripción de la tarea 1' },
-      { id: 2, name: 'Tarea 2', description: 'Descripción de la tarea 2' },
-      { id: 3, name: 'Tarea 3', description: 'Descripción de la tarea 3' },
-      { id: 4, name: 'Tarea 4', description: 'Descripción de la tarea 4' },
-      { id: 5, name: 'Tarea 5', description: 'Descripción de la tarea 5' },
-      { id: 6, name: 'Tarea 5', description: 'Descripción de la tarea 5' },
-      { id: 6, name: 'Tarea 5', description: 'Descripción de la tarea 5' },
-      { id: 6, name: 'Tarea 5', description: 'Descripción de la tarea 5' },
-  
+    //Query a las Tareas / Tasks
 
-    ];
+    const[tareas, setTareas] = useState<Tarea[]>([]);
 
-    const robots = [
-      { id: 1, name: 'B1', description: 'Descripción de la tarea 1', battery: 100, img: omronIcon },
-      { id: 2, name: 'Onrom', description: 'Descripción de la tarea 2', battery: 80, img: omronIcon},
-      { id: 3, name: 'X-Arm', description: 'Descripción de la tarea 3', battery: 50, img: xArm },
-      { id: 4, name: 'Onrom Arm', description: 'Descripción de la tarea 4', battery: 10, img: omronArm},
-    ];
+    useEffect(() => {
+      const fetchProcesos = async () => {
+        try{
+          const data = await RestHandler<Tarea[]>(
+            '/tareas', 
+            'Tarea', 
+            'GET'
+          );
+          console.log('Raw response:', data);
+          setTareas(data); 
+        } catch (error) {
+          console.error('Error fetching procesos', error);
+        }
+      }; 
+      fetchProcesos(); 
+    }, []); 
+
+    //Query a los Robots 
+
+    const[robots, setRobots] = useState<Robot[]>([]); 
+
+    useEffect(() => {
+      const fetchProcesos = async () => {
+        try{
+          const data = await RestHandler<Robot[]>(
+            '/robots', 
+            'Proceso', 
+            'GET'
+          );
+          console.log('Raw response:', data);
+          setRobots(data); 
+        } catch (error) {
+          console.error('Error fetching procesos', error);
+        }
+      }; 
+      fetchProcesos(); 
+    }, []); 
+
+   
+
+    const imagesRobots = {
+      'B1': b1Icon,
+      'x-Arm': xArm, 
+      'Omron-LD': omronIcon, 
+      'Omron-TM S': omronArm,
+    } 
 
     return (
     
@@ -77,22 +110,21 @@ const Process = () => {
               </div>
               
               <div className={Styles.content} style={{display: 'block', overflowY: 'auto', maxHeight: '350px'}}>
-                {tasks.map((task) => (
-                  <div key={task.id}>
+                {tareas.map((tarea) => (
                     <div className={Styles.elementList}>
                       <div>
-                        <h1>{task.name}</h1>
-                        <h2>{task.description}</h2>
+                        <h1>{tarea.Nombre}</h1>
+                        <h2>{tarea.Descripcion}</h2>
                       </div>
-
+                      {/*
                       <div style={{display:'flex', alignItems: 'right'}}>
                         <div style={{backgroundColor: '#cd9b37'}} className={Styles.type}> Type</div>
                         <div style={{backgroundColor:'#ca4646'}} className={Styles.status}> Status</div>
                         <div style={{backgroundColor:'#675e5e'}} className={Styles.date}> Date</div>
-                      </div>
+                      </div> */}
                     </div>
-                  </div>
                 ))}
+    
               </div>
             </div>
 
@@ -130,29 +162,27 @@ const Process = () => {
 
               <div className={Styles.content} style={{display: isRobotsActive ? 'block' : 'none', overflowY:'auto',maxHeight: '300px'}}>
                 {robots.map((robot) => (
-                  <div key={robot.id}>
                     <div className={Styles.elementList}>
-                      <Image src={robot.img} alt="" className={Styles.contentImage}/>
+                      <Image src={imagesRobots[robot.Nombre]} alt="" className={Styles.contentImage}/>
                       <div>
-                        <h1>{robot.name}</h1>
-                        <h2>{robot.description}</h2>
+                        <h1>{robot.Nombre}</h1>
+                        <h2>{robot.Descripcion}</h2>
                       </div>
 
                       <div style={{display:'flex', alignItems: 'right'}}>
                         <div className={Styles.batteryContainer}>
                           <div className={Styles.batteryStatus}>
                             <div className={Styles.batteryLevel}>
-                              <div style={{width:  `${robot.battery}%` ,
-                                backgroundColor: robot.battery > 50 ? 'green': robot.battery > 20 ? 'orange' : 'red',
+                              <div style={{width:  `${70}%` ,
+                                backgroundColor: 70 > 50 ? 'green': 70 > 20 ? 'orange' : 'red',
                                 }} className={Styles.batteryFill}>
                               </div>
-                              <span className={Styles.batteryPercentage}>{robot.battery}%</span>
+                              <span className={Styles.batteryPercentage}>{70}%</span>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                </div>
                 ))}
               </div>          
             </div>

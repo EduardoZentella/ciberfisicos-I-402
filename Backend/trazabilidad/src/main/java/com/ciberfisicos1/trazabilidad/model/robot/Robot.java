@@ -26,6 +26,8 @@ public class Robot {
     @Nonnull
     @Column(name = "Type",nullable = false)
     private String type;
+    @Column(name = "Charge")
+    private String charge;
     @ManyToMany
     @JoinTable(
         name = "Robot_Proceso",

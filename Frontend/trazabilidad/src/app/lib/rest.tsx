@@ -43,10 +43,10 @@ const convertData = (data: any, type: string): DataType | DataType[] => {
         return {
           Proceso_Id: item.procesoid,
           Nombre: item.name,
+          Location: item.location,
           Descripcion: item.description,
           Ini_Date: parseDate(item.iniDate),
           End_Date: parseDate(item.endDate), 
-          Location: item.location,
           Status: item.status,
         } as Proceso;
       case 'Tarea':
@@ -133,12 +133,12 @@ const RestHandler = async <T extends DataType | DataType[]>(
         body: method !== 'GET' ? JSON.stringify(body) : undefined,
       }
     );
-
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
 
     const data = await response.json();
+    console.log(data)
     return convertData(data, type) as T;
   } catch (error) {
     console.error('Error fetching data:', error);

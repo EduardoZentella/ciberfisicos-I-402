@@ -7,6 +7,7 @@ import { useLanguage } from '../lib/context/LanguageContext';
 import { Proceso} from '../lib/models'
 import RestHandler from '../lib/rest'
 import {useEffect, useState} from 'react'
+import { card } from '@nextui-org/theme';
 
 
 const DashboardHomePage = () => {
@@ -17,10 +18,11 @@ const DashboardHomePage = () => {
     const fetchProcesos = async () => {
       try{
         const data = await RestHandler<Proceso[]>(
-          '/procesos', 
+          '/procesos/status', 
           'Proceso', 
           'GET'
         );
+        console.log('Raw response:', data);
         setProcesos(data); 
       } catch (error) {
         console.error('Error fetching procesos', error);
@@ -29,10 +31,12 @@ const DashboardHomePage = () => {
     fetchProcesos(); 
   }, []); 
 
+  
+
   const { currentTranslations, changeLanguage, currentLanguage } = useLanguage(); 
 
   const imagesPaths = {
-    'smartTrack': smartTrack_img,
+    'Smart Track': smartTrack_img,
   } 
 
   return (
@@ -46,7 +50,6 @@ const DashboardHomePage = () => {
       <div className={cardStyles.cardWrapper}>
 
         {/* Mapeamos los procesos*/}
-
         <ul>
           {procesos.map((proceso) => (
             <div className={cardStyles.card}>

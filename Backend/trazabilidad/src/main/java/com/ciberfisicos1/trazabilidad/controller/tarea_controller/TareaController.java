@@ -34,6 +34,11 @@ public class TareaController {
         return tareaService.getTareaById(id);
     }
 
+    @GetMapping("/last8")
+    public ResponseEntity<List<TareaDTO>> getLast8Tareas(){
+        return tareaService.getLast8Tareas();
+    }
+
     @PostMapping
     public ResponseEntity<TareaDTO> addTarea(@RequestBody Map<String, Object> tarea) {
         return tareaService.addTarea(tarea);
