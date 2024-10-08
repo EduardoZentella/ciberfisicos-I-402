@@ -1,5 +1,7 @@
 package com.ciberfisicos1.trazabilidad.service.proceso_service;
 
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +23,7 @@ public class ProcesoService {
 
     public ResponseEntity<List<Proceso>> getAllProcesos() {
         List<Proceso> procesos = procesoRepository.findAll();
-        procesos.forEach(this::decryptProceso);
+        procesos.parallelStream().forEach(this::decryptProceso);
         return ResponseEntity.ok(procesos);
     }
 
@@ -41,8 +43,21 @@ public class ProcesoService {
 
     public ResponseEntity<List<Proceso>> getProcesoByStatus() {
         List<Proceso> procesos = procesoRepository.findProcesoByStatusDecrypted(encryptionService);
-        procesos.forEach(this::decryptProceso);
+        procesos.parallelStream().forEach(this::decryptProceso);
         return ResponseEntity.ok(procesos);
+    }
+
+    public ResponseEntity<List<Proceso>> getProcesosFromLastHours(int hours) {
+        Optional<Proceso> mostRecentProceso = procesoRepository.findMostRecentProceso();
+        if (mostRecentProceso.isPresent()) {
+            Date mostRecentDate = mostRecentProceso.get().getIniDate();
+            Date startDate = new Date(mostRecentDate.getTime() - hours * 60 * 60 * 1000);
+            List<Proceso> procesos = procesoRepository.findProcesosFromDate(startDate);
+            procesos.parallelStream().forEach(this::decryptProceso);
+            return ResponseEntity.ok(procesos);
+        } else {
+            return ResponseEntity.ok(Collections.emptyList());
+        }
     }
 
     public ResponseEntity<Proceso> updateProceso(Proceso proceso, Long procesoId) {

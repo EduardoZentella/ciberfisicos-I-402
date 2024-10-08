@@ -16,6 +16,7 @@ viewDetails: View Details
 process: Process
 history: History
 warnings: Warnings
+warningsRobots: The robot {robotName} has low battery {charge}
 qualityRate: Quality Rate
 timeAverage: Time Average Analysis
 succesRate: Process Succes Rate

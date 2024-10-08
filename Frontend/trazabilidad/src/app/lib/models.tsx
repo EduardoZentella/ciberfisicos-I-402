@@ -22,6 +22,9 @@ export interface Tarea {
   Nombre: string;
   Descripcion: string;
   Proceso_Id: number;
+  Ini_Date: Date;
+  End_Date: Date;
+  Status: string;
 }
 
 export interface Actividad {
@@ -36,6 +39,7 @@ export interface Robot {
   Nombre: string;
   Descripcion: string;
   Type: string;
+  Charge: string; 
 }
 
 export interface Robot_Proceso {

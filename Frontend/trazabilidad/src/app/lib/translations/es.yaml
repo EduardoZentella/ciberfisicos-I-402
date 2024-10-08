@@ -16,6 +16,7 @@ viewDetails: Ver detalles
 process: Proceso
 history: Historial
 warnings: Advertencias
+warningsRobots: El robot {robotName} tiene poca batería {charge}
 qualityRate: Porcentaje de calidad
 timeAverage: Tiempo promedio del proceso
 succesRate: Tasa de éxtio del proceso

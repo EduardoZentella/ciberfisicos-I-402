@@ -210,7 +210,7 @@
     margin-left: 10px;
 }
 
-.type, .status, .date {
+.addInfo {
     border-radius: 8px;
     padding: 10px; 
     margin: 5px;

@@ -55,6 +55,9 @@ const convertData = (data: any, type: string): DataType | DataType[] => {
           Nombre: item.name,
           Descripcion: item.description,
           Proceso_Id: item.procesoid,
+          Ini_Date: parseDate(item.iniDate),
+          End_Date: parseDate(item.endDate),
+          Status: item.status,
         } as Tarea;
       case 'Actividad':
         return {
@@ -67,8 +70,8 @@ const convertData = (data: any, type: string): DataType | DataType[] => {
         return {
           Robot_Id: item.robotid,
           Nombre: item.name,
-          Descripcion: item.description,
           Type: item.type,
+          Charge: item.charge,
         } as Robot;
       case 'Robot_Proceso':
         return {

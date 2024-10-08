@@ -37,6 +37,11 @@ public class ProcesoController {
         return procesoService.getProcesoByStatus();
     }
 
+    @GetMapping("/lastHours/{hours}")
+    public ResponseEntity<List<Proceso>> getProcesosFromLastHours(@PathVariable int hours) {
+        return procesoService.getProcesosFromLastHours(hours);
+    }
+
     @PostMapping
     public ResponseEntity<Proceso> addProceso(@RequestBody Proceso proceso) {
         return procesoService.addProceso(proceso);

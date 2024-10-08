@@ -34,9 +34,9 @@ public class TareaController {
         return tareaService.getTareaById(id);
     }
 
-    @GetMapping("/last8")
-    public ResponseEntity<List<TareaDTO>> getLast8Tareas(){
-        return tareaService.getLast8Tareas();
+    @GetMapping("/last/{n}")
+    public ResponseEntity<List<TareaDTO>> getLastNTareas(@PathVariable int n) {
+        return tareaService.getLastNTareas(n);
     }
 
     @PostMapping

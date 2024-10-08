@@ -1,4 +1,5 @@
 'use client'; 
+import { useRouter } from 'next/navigation';
 
 import Styles from "@/app/UI/Dashboard/Process.module.css"
 import Image from 'next/image';
@@ -15,6 +16,9 @@ import warningsIcon from '@/app/UI/images/Dashboard/warning_ico.png'
 import successIcon from '@/app/UI/images/Dashboard/rate_success.png'
 import qualityIcon from '@/app/UI/images/Dashboard/quality_ico.png'
 import timeIcon from '@/app/UI/images/Dashboard/time_avg.png'
+import safe from '@/app/UI/images/Dashboard/safe.gif'
+import warn from '@/app/UI/images/Dashboard/warning.gif'
+import loader from '@/app/UI/images/loader.gif'
 import React, {useEffect, useState} from 'react'; 
 import PieChart from "@/app/UI/Dashboard/Analisis/Piechart"
 import LineChart from "@/app/UI/Dashboard/Analisis/Linechart"
@@ -30,29 +34,41 @@ const Process = () => {
 
     const [isRobotsActive, setIsRobotsActive] = useState(true); 
 
+    const [robotsWarnings, setRobotsWarnings] = useState<string[]>([]);
+
+    const [processWarnings, setProcesssWarnings] = useState<string[]>([]);
+
     const toggleRobots = () => {
       setIsRobotsActive(!isRobotsActive)
     }
 
+    const router = useRouter();
+    router.prefetch
+
+
+   
     //Query a las Tareas / Tasks
 
     const[tareas, setTareas] = useState<Tarea[]>([]);
 
     useEffect(() => {
-      const fetchProcesos = async () => {
+      const fetchTareas = async () => {
         try{
           const data = await RestHandler<Tarea[]>(
-            '/tareas', 
+            '/tareas/last/8', 
             'Tarea', 
             'GET'
           );
+          
           console.log('Raw response:', data);
           setTareas(data); 
         } catch (error) {
-          console.error('Error fetching procesos', error);
+          console.error('Error fetching tareas', error);
         }
       }; 
-      fetchProcesos(); 
+      fetchTareas(); 
+      const interval = setInterval(fetchTareas, 1500); 
+      return () => clearInterval(interval); 
     }, []); 
 
     //Query a los Robots 
@@ -60,22 +76,32 @@ const Process = () => {
     const[robots, setRobots] = useState<Robot[]>([]); 
 
     useEffect(() => {
-      const fetchProcesos = async () => {
+      const fetchRobots = async () => {
         try{
           const data = await RestHandler<Robot[]>(
             '/robots', 
-            'Proceso', 
+            'Robot', 
             'GET'
           );
           console.log('Raw response:', data);
           setRobots(data); 
+
+
+          const newWarnings = data
+          .filter(robot => parseInt(robot.Charge.slice(0,-1)) < 25)
+          .map(robot => `${robot.Nombre},(${robot.Charge}).`);
+        
+        setRobotsWarnings(newWarnings);
         } catch (error) {
-          console.error('Error fetching procesos', error);
+          console.error('Error fetching  robots', error);
         }
       }; 
-      fetchProcesos(); 
+      fetchRobots(); 
+    
+      const interval = setInterval(fetchRobots, 1500); 
+      return () => clearInterval(interval); 
     }, []); 
-
+    
    
 
     const imagesRobots = {
@@ -85,11 +111,25 @@ const Process = () => {
       'Omron-TM S': omronArm,
     } 
 
+  if (tareas.length === 0 || robots.length === 0) {
+    return <div style={{
+      display: 'flex',
+      justifyContent: 'center', // Centra horizontalmente
+      alignItems: 'center',     // Centra verticalmente
+      width: '93vw',
+      height: '90vh',
+      backgroundColor: 'white',
+    }}
+  >
+    <Image src={loader} alt="" style={{width: '100px', height: 'auto'}}/>
+  </div>
+  }
+
     return (
     
       <div style={{width: 'auto', margin: '15px'}}>
         {/*Titulo del proceso*/}
-        <div className={Styles.process}> <p>{currentTranslations.process}: Nombre del proceso</p> </div>
+        <div className={Styles.process}> <p>{currentTranslations.process}:</p> </div>
         {/*Grid*/}
         <div className={Styles.gridWrapper}>
         {/*Primera columna para tareas recientes y warnings*/}
@@ -109,23 +149,37 @@ const Process = () => {
                 </div>
               </div>
               
-              <div className={Styles.content} style={{display: 'block', overflowY: 'auto', maxHeight: '350px'}}>
-                {tareas.map((tarea) => (
-                    <div className={Styles.elementList}>
-                      <div>
-                        <h1>{tarea.Nombre}</h1>
-                        <h2>{tarea.Descripcion}</h2>
-                      </div>
-                      {/*
-                      <div style={{display:'flex', alignItems: 'right'}}>
-                        <div style={{backgroundColor: '#cd9b37'}} className={Styles.type}> Type</div>
-                        <div style={{backgroundColor:'#ca4646'}} className={Styles.status}> Status</div>
-                        <div style={{backgroundColor:'#675e5e'}} className={Styles.date}> Date</div>
-                      </div> */}
-                    </div>
-                ))}
-    
+              <div className={Styles.content} style={{ display: 'grid', overflowY: 'auto', maxHeight: '350px', gridTemplateColumns: '1fr' }}>
+            {tareas.map((tarea) => (
+              <div className={Styles.elementList} style={{display: 'grid', gridTemplateColumns: '3fr 1fr', gap: '10px', alignItems: 'center' }}>
+                <div>
+                  <h1>{tarea.Nombre}</h1>
+                  <h2>{tarea.Descripcion} </h2>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px' }}>
+                  
+                <div  style={{ backgroundColor: tarea.Status === 'In Progress' ? '#007bff' :
+                                                tarea.Status === 'Completed' ? '#28a745' : 
+                                                tarea.Status === 'Error' ? '#dc3545' : '#6c757d'}} className={Styles.addInfo} > 
+                  {tarea.Status}
+                </div>
+                  
+                  <div style={{backgroundColor: '#6610f2'}} className={Styles.addInfo}> 
+                    {tarea.Ini_Date.getDate()}/{tarea.Ini_Date.getMonth() + 1} {/* Fecha de Inicio */}
+                  </div>
+
+                  <div style={{backgroundColor: '#17a2b8'}} className={Styles.addInfo}> 
+                    {tarea.Ini_Date.getHours()}:{tarea.Ini_Date.getMinutes()}:{tarea.Ini_Date.getSeconds()} {/* Hora de Inicio */}
+                  </div>
+
+                  <div style={{backgroundColor: '#6f42c1'}} className={Styles.addInfo}> 
+                    {tarea.End_Date.getHours()}:{tarea.End_Date.getMinutes()}:{tarea.End_Date.getSeconds()} {/* Hora de Fin */}
+                  </div>
+                </div>
               </div>
+            ))}
+          </div>
+
             </div>
 
             {/*Warnings*/}
@@ -133,13 +187,19 @@ const Process = () => {
               <div className={Styles.containerButton}>
                 <Image src={warningsIcon} alt="" className={Styles.iconButton}/>
                 <h1 style={{marginLeft: '10px'}}>{currentTranslations.warnings}</h1>
-                
+              
               </div>
 
-              <div className={Styles.chartContainer} style={{height: '100px'}}>
+              <div className={Styles.chartContainer} style={{height: 'auto', minHeight:'140px', alignItems: 'left', flexDirection: 'row', maxHeight: '200px'}}>
                 <div style={{position: 'relative'}}>
-                  Pendiente
+                  <Image src={robotsWarnings.length== 0 && processWarnings.length == 0 ? safe: warn} alt="" style={{height: '100px', width: 'auto'}}/>
                 </div>
+                <h1 style={{textAlign: 'left', marginLeft: '20px', fontFamily: 'Bebas Neue', fontSize: '17px', fontWeight: 'bold', color: (robotsWarnings.length==0 && processWarnings.length==0) ? '#0c4716': '#4e0d0d'}}>   
+                  {robotsWarnings.map((item) => (
+                    <p>{currentTranslations.warningsRobots.replace('{robotName}', item.split(',')[0]).replace('{charge}', item.split(',')[1])}</p>
+                  ))}
+                  <p style={{display: robotsWarnings.length==0 && processWarnings.length== 0 ? 'Block': 'None'}}>No hay ninga advertencia en el proceso !!</p>
+                </h1>
               </div>
 
             </div> 
@@ -173,11 +233,11 @@ const Process = () => {
                         <div className={Styles.batteryContainer}>
                           <div className={Styles.batteryStatus}>
                             <div className={Styles.batteryLevel}>
-                              <div style={{width:  `${70}%` ,
-                                backgroundColor: 70 > 50 ? 'green': 70 > 20 ? 'orange' : 'red',
+                              <div style={{width:  `${robot.Charge}` ,
+                                backgroundColor: parseInt(robot.Charge.slice(0,-1)) > 50 ? '#4CAF50': parseInt(robot.Charge.slice(0,-1)) > 20 ? 'orange' : 'red',
                                 }} className={Styles.batteryFill}>
                               </div>
-                              <span className={Styles.batteryPercentage}>{70}%</span>
+                              <span className={Styles.batteryPercentage}>{robot.Charge}</span>
                             </div>
                           </div>
                         </div>

@@ -28,7 +28,7 @@ public class ActividadService {
 
     public ResponseEntity<List<ActividadDTO>> getAllActividades() {
         List<Actividad> actividades = actividadRepository.findAll();
-        actividades.forEach(this::decryptActividad);
+        actividades.parallelStream().forEach(this::decryptActividad);
         List<ActividadDTO> actividadesDTOs = actividades.stream().map(Actividad::toDTO).collect(Collectors.toList());
         return ResponseEntity.ok(actividadesDTOs);
     }
