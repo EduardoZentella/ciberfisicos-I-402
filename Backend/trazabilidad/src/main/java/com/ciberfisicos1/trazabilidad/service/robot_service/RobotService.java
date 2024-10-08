@@ -22,7 +22,7 @@ public class RobotService {
 
     public ResponseEntity<List<Robot>> getAllRobots() {
         List<Robot> robots = robotRepository.findAll();
-        robots.forEach(this::decryptRobot);
+        robots.parallelStream().forEach(this::decryptRobot);
         return ResponseEntity.ok(robots);
     }
 

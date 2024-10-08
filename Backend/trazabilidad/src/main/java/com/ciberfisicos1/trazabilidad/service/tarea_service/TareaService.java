@@ -3,6 +3,8 @@ package com.ciberfisicos1.trazabilidad.service.tarea_service;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.ciberfisicos1.trazabilidad.errors.exceptions.ResourceNotFoundException;
@@ -29,7 +31,7 @@ public class TareaService {
 
     public ResponseEntity<List<TareaDTO>> getAllTareas() {
         List<Tarea> tareas = tareaRepository.findAll();
-        tareas.forEach(this::decryptTarea);
+        tareas.parallelStream().forEach(this::decryptTarea);
         List<TareaDTO> tareaDTOs = tareas.stream().map(Tarea::toDTO).collect(Collectors.toList());
         return ResponseEntity.ok(tareaDTOs);
     }
@@ -40,9 +42,10 @@ public class TareaService {
         return ResponseEntity.ok(tarea.map(Tarea::toDTO).orElseThrow(() -> new ResourceNotFoundException("Actividad no encontrada con id: " + tareaId)));
     }
 
-    public ResponseEntity<List<TareaDTO>> getLast8Tareas() {
-        List<Tarea> tareas = tareaRepository.findTop8ByOrderByTareaIdDesc();
-        tareas.forEach(this::decryptTarea);
+    public ResponseEntity<List<TareaDTO>> getLastNTareas(int n) {
+        Pageable pageable = PageRequest.of(0, n);
+        List<Tarea> tareas = tareaRepository.findTopNTareas(pageable);
+        tareas.parallelStream().forEach(this::decryptTarea);
         List<TareaDTO> tareaDTOs = tareas.stream().map(Tarea::toDTO).collect(Collectors.toList());
         return ResponseEntity.ok(tareaDTOs);
     }

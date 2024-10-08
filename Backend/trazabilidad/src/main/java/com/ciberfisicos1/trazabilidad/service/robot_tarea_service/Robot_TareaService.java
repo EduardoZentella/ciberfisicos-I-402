@@ -27,7 +27,7 @@ public class Robot_TareaService {
 
     public ResponseEntity<List<Robot_Tarea>> getAllRobotTareas() {
         List<Robot_Tarea> robotTareas = robotTareaRepository.findAll();
-        robotTareas.forEach(this::decryptRobotTarea);
+        robotTareas.parallelStream().forEach(this::decryptRobotTarea);
         return ResponseEntity.ok(robotTareas);
     }
 
@@ -40,13 +40,13 @@ public class Robot_TareaService {
 
     public ResponseEntity<List<Robot_Tarea>> getRobotTareasByRobotId(Long robotId) {
         List<Robot_Tarea> robotTareas = robotTareaRepository.findById_RobotId(robotId);
-        robotTareas.forEach(this::decryptRobotTarea);
+        robotTareas.parallelStream().forEach(this::decryptRobotTarea);
         return ResponseEntity.ok(robotTareas);
     }
 
     public ResponseEntity<List<Robot_Tarea>> getRobotTareasByTareaId(Long tareaId) {
         List<Robot_Tarea> robotTareas = robotTareaRepository.findById_TareaId(tareaId);
-        robotTareas.forEach(this::decryptRobotTarea);
+        robotTareas.parallelStream().forEach(this::decryptRobotTarea);
         return ResponseEntity.ok(robotTareas);
     }
 

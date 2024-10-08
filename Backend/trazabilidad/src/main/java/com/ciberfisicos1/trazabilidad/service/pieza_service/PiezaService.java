@@ -25,7 +25,7 @@ public class PiezaService {
 
     public ResponseEntity<List<PiezaDTO>> getAllPiezas() {
         List<Pieza> piezas = piezaRepository.findAll();
-        piezas.forEach(this::decryptPieza);
+        piezas.parallelStream().forEach(this::decryptPieza);
         List<PiezaDTO> piezasDTOs = piezas.stream().map(Pieza::toDTO).collect(Collectors.toList());
         return ResponseEntity.ok(piezasDTOs);
     }
