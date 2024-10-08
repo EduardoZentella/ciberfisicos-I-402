@@ -46,6 +46,11 @@ public class PiezaController {
         return piezaService.getPiezaByLoteId(loteId);
     }
 
+    @GetMapping("/type/{type}")
+    public ResponseEntity<List<PiezaDTO>> getPiezaByType(@PathVariable int type) {
+        return piezaService.getPiezaByType(type);
+    }
+
     @PostMapping
     public ResponseEntity<PiezaDTO> addPieza(@RequestBody Map<String, Object> piezaMap) {
         return piezaService.addPieza(piezaMap);

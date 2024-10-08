@@ -13,12 +13,12 @@ import com.ciberfisicos1.trazabilidad.service.encryption_service.EncryptionServi
 
 @Repository
 public interface ProcesoRepository extends JpaRepository<Proceso, Long> {
-    default List<Proceso> findProcesoByStatusDecrypted(EncryptionService encryptionService) {
+    default List<Proceso> findProcesoByStatusDecrypted(String status,EncryptionService encryptionService) {
         List<Proceso> procesos = findAll();
         return procesos.stream()
                 .filter(proceso -> {
                     String decryptedStatus = encryptionService.decryptData(proceso.getStatus(), 999L);
-                    return "Done".equals(decryptedStatus);
+                    return status.equals(decryptedStatus);
                 })
                 .collect(Collectors.toList());
     }
