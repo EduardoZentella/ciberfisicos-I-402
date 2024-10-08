@@ -14,7 +14,7 @@ export default function BarChart() {
             const context = chartRef.current.getContext("2d"); 
 
             const newChart = new Chart(context, {
-                type: "bar", 
+                type: "pie", 
                 data: {
                     labels: ["Task1", "Task2", "Task3", "Task4", "Task5"],
                     datasets: [

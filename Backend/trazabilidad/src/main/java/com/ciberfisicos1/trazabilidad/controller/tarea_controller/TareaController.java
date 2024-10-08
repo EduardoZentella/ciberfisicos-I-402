@@ -39,6 +39,11 @@ public class TareaController {
         return tareaService.getLastNTareas(n);
     }
 
+    @GetMapping("date/{date}")
+    public ResponseEntity<List<TareaDTO>> getTareasByDate(@PathVariable String date) {
+        return tareaService.getTareasByDate(date);
+    }
+
     @PostMapping
     public ResponseEntity<TareaDTO> addTarea(@RequestBody Map<String, Object> tarea) {
         return tareaService.addTarea(tarea);

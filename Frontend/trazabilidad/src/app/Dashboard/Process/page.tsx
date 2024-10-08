@@ -1,6 +1,5 @@
 'use client'; 
-import { useRouter } from 'next/navigation';
-
+import { useSearchParams } from 'next/navigation';
 import Styles from "@/app/UI/Dashboard/Process.module.css"
 import Image from 'next/image';
 import robotIcon from '@/app/UI/images/Dashboard/Robot_ico.png';
@@ -42,12 +41,16 @@ const Process = () => {
       setIsRobotsActive(!isRobotsActive)
     }
 
-    const router = useRouter();
-    router.prefetch
+    const searchParams = useSearchParams(); 
+    const [processName, setProcessName] = useState<string | null>(null); 
 
+  useEffect(() => {
+    const pName = searchParams.get('pageName'); 
 
-   
-    //Query a las Tareas / Tasks
+    if(pName) {
+      setProcessName(pName); 
+    }
+  }, [searchParams]); 
 
     const[tareas, setTareas] = useState<Tarea[]>([]);
 
@@ -70,8 +73,6 @@ const Process = () => {
       const interval = setInterval(fetchTareas, 1500); 
       return () => clearInterval(interval); 
     }, []); 
-
-    //Query a los Robots 
 
     const[robots, setRobots] = useState<Robot[]>([]); 
 
@@ -129,7 +130,7 @@ const Process = () => {
     
       <div style={{width: 'auto', margin: '15px'}}>
         {/*Titulo del proceso*/}
-        <div className={Styles.process}> <p>{currentTranslations.process}:</p> </div>
+        <div className={Styles.process}> <p>{currentTranslations.process}: {processName}</p> </div>
         {/*Grid*/}
         <div className={Styles.gridWrapper}>
         {/*Primera columna para tareas recientes y warnings*/}
@@ -264,7 +265,7 @@ const Process = () => {
               </div>
 
               <div className={Styles.chartContainer} style={{ height: isRobotsActive ? '180px' : '90%' }}>
-                <BarChart />
+                <BarChart/>
             </div>
 
             </div> 
@@ -311,7 +312,6 @@ const Process = () => {
               
 
               <div className={Styles.chartContainer} style={{gridColumn:2, gridRow:3}}>
-                <h1>Quality rate</h1>
                 <div style={{position: 'relative', height: '100%', width: '100%'}}>
                   <LineChart/>
                 </div>

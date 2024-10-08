@@ -1,5 +1,7 @@
 package com.ciberfisicos1.trazabilidad.service.proceso_service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -41,8 +43,22 @@ public class ProcesoService {
         return ResponseEntity.ok(savedProceso);
     }
 
-    public ResponseEntity<List<Proceso>> getProcesoByStatus() {
-        List<Proceso> procesos = procesoRepository.findProcesoByStatusDecrypted(encryptionService);
+    public ResponseEntity<List<Proceso>> getProcesoByStatus(int type) {
+        String status;
+        switch (type) {
+            case 1:
+                status = "Done";
+                break;
+            case 2:
+                status = "In Progress";
+                break;
+            case 3:
+                status = "Error";
+                break;
+            default:
+                throw new IllegalArgumentException("Tipo de estado de proceso no válido");
+        }
+        List<Proceso> procesos = procesoRepository.findProcesoByStatusDecrypted(status,encryptionService);
         procesos.parallelStream().forEach(this::decryptProceso);
         return ResponseEntity.ok(procesos);
     }
@@ -58,6 +74,25 @@ public class ProcesoService {
         } else {
             return ResponseEntity.ok(Collections.emptyList());
         }
+    }
+
+    public ResponseEntity<List<Proceso>> getProcesosFromDate(String date){
+        List<String> dateFormats = List.of("yyyy", "yyyy-MM", "yyyy/MM", "yyyy.MM", "yyyy-MM-dd", "yyyy/MM/dd", "yyyy.MM.dd");
+        Date startDate = null;
+        for (String format : dateFormats) {
+            try {
+                startDate = new SimpleDateFormat(format).parse(date);
+                break;
+            } catch (ParseException e) {
+                // Continuar con el siguiente formato
+            }
+        }
+        if (startDate == null) {
+            throw new IllegalArgumentException("Formato de fecha no válido. Los formatos válidos son: yyyy, yyyy-MM, yyyy/MM, yyyy.MM, yyyy-MM-dd, yyyy/MM/dd, yyyy.MM.dd.");
+        }
+        List<Proceso> procesos = procesoRepository.findProcesosFromDate(startDate);
+        procesos.parallelStream().forEach(this::decryptProceso);
+        return ResponseEntity.ok(procesos);
     }
 
     public ResponseEntity<Proceso> updateProceso(Proceso proceso, Long procesoId) {

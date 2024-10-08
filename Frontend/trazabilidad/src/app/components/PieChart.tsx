@@ -14,7 +14,7 @@ export default function PieChart() {
             const context = chartRef.current.getContext("2d"); 
 
             const newChart = new Chart(context, {
-                type: "pie", 
+                type: "doughnut", 
                 data: {
                     labels: ["Quality Parts", "Defective Parts"], 
                     datasets: [
@@ -30,7 +30,6 @@ export default function PieChart() {
                 }, 
                 options: {
                     responsive:true,
-                    // Aquí puedes agregar opciones adicionales si es necesario
                 }, 
             });
 

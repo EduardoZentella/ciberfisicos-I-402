@@ -46,6 +46,27 @@ public class PiezaService {
         return ResponseEntity.ok(piezasDTOs);
     }
 
+    public ResponseEntity<List<PiezaDTO>> getPiezaByType(int type) {
+        String status;
+        switch (type) {
+            case 1:
+                status = "Green";
+                break;
+            case 2:
+                status = "Red";
+                break;
+            case 3:
+                status = "Blue";
+                break;
+            default:
+                throw new IllegalArgumentException("Tipo de pieza no válido");
+        }
+        List<Pieza> piezas = piezaRepository.findByType(status,encryptionService);
+        piezas.parallelStream().forEach(this::decryptPieza);
+        return ResponseEntity.ok(piezas.stream().map(Pieza::toDTO).collect(Collectors.toList()));
+    }
+
+
     public ResponseEntity<PiezaDTO> addPieza(Map<String, Object> piezaMap) {
         Pieza pieza = new Pieza();
         if(piezaMap.get("piezaId") == null) {

@@ -32,14 +32,19 @@ public class ProcesoController {
         return procesoService.getProcesoById(id);
     }
 
-    @GetMapping("/status")
-    public ResponseEntity<List<Proceso>> getProcesoByStatus() {
-        return procesoService.getProcesoByStatus();
+    @GetMapping("/status/{type}")
+    public ResponseEntity<List<Proceso>> getProcesoByStatus(@PathVariable int type) {
+        return procesoService.getProcesoByStatus(type);
     }
 
     @GetMapping("/lastHours/{hours}")
     public ResponseEntity<List<Proceso>> getProcesosFromLastHours(@PathVariable int hours) {
         return procesoService.getProcesosFromLastHours(hours);
+    }
+
+    @GetMapping("/date/{date}")
+    public ResponseEntity<List<Proceso>> getProcesoFromDate(@PathVariable String date){
+        return procesoService.getProcesosFromDate(date);
     }
 
     @PostMapping

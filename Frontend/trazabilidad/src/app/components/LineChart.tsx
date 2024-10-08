@@ -16,7 +16,7 @@ export default function PieChart() {
             const newChart = new Chart(context, {
                 type: "line", 
                 data: {
-                    labels: ["07-10", "10-13", "13-16", "16-19", "19-22"],
+                    labels: ["07-10", "10-13", "13-16s", "16-19", "19-22"],
                     datasets: [
                         {
                             label:"",
@@ -40,7 +40,7 @@ export default function PieChart() {
                         y: {
                             title: {
                                 display: true, 
-                                text: 'Tiempo Promedio (s)'
+                                text: 'Tiempo Promedio (s)  '
                             },
                             ticks: {
                                 autoSkip: true,

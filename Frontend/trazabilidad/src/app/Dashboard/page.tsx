@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import loader from '@/app/UI/images/loader.gif';
+import { SearchParamsContext } from 'next/dist/shared/lib/hooks-client-context.shared-runtime';
 
 const DashboardHomePage = () => {
   const [procesos, setProcesos] = useState<Proceso[]>([]);
@@ -30,7 +31,6 @@ const DashboardHomePage = () => {
   }, []);
 
   const { currentTranslations } = useLanguage();
-
   const imagesPaths = {
     'Smart Track': smartTrack_img,
   };

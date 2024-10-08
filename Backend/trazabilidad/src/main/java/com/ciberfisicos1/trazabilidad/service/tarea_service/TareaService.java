@@ -1,5 +1,6 @@
 package com.ciberfisicos1.trazabilidad.service.tarea_service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -48,6 +49,25 @@ public class TareaService {
         tareas.parallelStream().forEach(this::decryptTarea);
         List<TareaDTO> tareaDTOs = tareas.stream().map(Tarea::toDTO).collect(Collectors.toList());
         return ResponseEntity.ok(tareaDTOs);
+    }
+
+    public ResponseEntity<List<TareaDTO>> getTareasByDate(String date){
+        List<String> dateFormats = List.of("yyyy", "yyyy-MM", "yyyy/MM", "yyyy.MM", "yyyy-MM-dd", "yyyy/MM/dd", "yyyy.MM.dd");
+        Date startDate = null;
+        for (String format : dateFormats) {
+            try {
+                startDate = new SimpleDateFormat(format).parse(date);
+                break;
+            } catch (ParseException e) {
+                // Continuar con el siguiente formato
+            }
+        }
+        if (startDate == null) {
+            throw new IllegalArgumentException("Formato de fecha no válido. Los formatos válidos son: yyyy, yyyy-MM, yyyy/MM, yyyy.MM, yyyy-MM-dd, yyyy/MM/dd, yyyy.MM.dd.");
+        }
+        List<Tarea> tareas = tareaRepository.findTareaFromDate(startDate);
+        tareas.parallelStream().forEach(this::decryptTarea);
+        return ResponseEntity.ok(tareas.stream().map(Tarea::toDTO).collect(Collectors.toList()));
     }
 
     public ResponseEntity<TareaDTO> addTarea(Map<String, Object> tareaMap) {
