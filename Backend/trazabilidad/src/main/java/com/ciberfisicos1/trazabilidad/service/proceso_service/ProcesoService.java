@@ -2,6 +2,7 @@ package com.ciberfisicos1.trazabilidad.service.proceso_service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -90,7 +91,8 @@ public class ProcesoService {
         if (startDate == null) {
             throw new IllegalArgumentException("Formato de fecha no válido. Los formatos válidos son: yyyy, yyyy-MM, yyyy/MM, yyyy.MM, yyyy-MM-dd, yyyy/MM/dd, yyyy.MM.dd.");
         }
-        List<Proceso> procesos = procesoRepository.findProcesosFromDate(startDate);
+        Date endDate = calculateEndDate(startDate, date);
+        List<Proceso> procesos = procesoRepository.findProcesosFromDateRange(startDate,endDate);
         procesos.parallelStream().forEach(this::decryptProceso);
         return ResponseEntity.ok(procesos);
     }
@@ -191,5 +193,26 @@ public class ProcesoService {
         } else {
             proceso.setStatus(encryptionService.decryptData(proceso.getStatus(), SYSTEM_USER_ID));
         }
-    }    
+    }
+    
+    private Date calculateEndDate(Date startDate, String formatUsed) {
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTime(startDate);
+    switch (formatUsed) {
+        case "yyyy":
+            calendar.add(Calendar.YEAR, 1);
+            break;
+        case "yyyy-MM":
+        case "yyyy/MM":
+        case "yyyy.MM":
+            calendar.add(Calendar.MONTH, 1);
+            break;
+        case "yyyy-MM-dd":
+        case "yyyy/MM/dd":
+        case "yyyy.MM.dd":
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+            break;
+    }
+    return calendar.getTime();
+    }
 }
