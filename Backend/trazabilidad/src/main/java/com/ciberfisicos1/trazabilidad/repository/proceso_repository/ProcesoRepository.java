@@ -27,5 +27,5 @@ public interface ProcesoRepository extends JpaRepository<Proceso, Long> {
     @Query("SELECT p FROM Proceso p WHERE p.iniDate >= :startDate")
     List<Proceso> findProcesosFromDate(@Param("startDate") Date startDate);
     @Query("SELECT p FROM Proceso p WHERE p.iniDate >= :startDate AND p.iniDate < :endDate")
-    List<Proceso> findProcesosFromDateRange(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+    List<Proceso> findProcesosFromDateRange(@Param("startDate") Date startDate, @Param("endDate")Date endDate);
 }

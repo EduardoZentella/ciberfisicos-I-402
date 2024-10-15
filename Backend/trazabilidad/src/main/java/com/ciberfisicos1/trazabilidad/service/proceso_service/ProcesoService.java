@@ -78,11 +78,14 @@ public class ProcesoService {
     }
 
     public ResponseEntity<List<Proceso>> getProcesosFromDate(String date){
-        List<String> dateFormats = List.of("yyyy", "yyyy-MM", "yyyy/MM", "yyyy.MM", "yyyy-MM-dd", "yyyy/MM/dd", "yyyy.MM.dd");
-        Date startDate = null;
+        List<String> dateFormats = List.of("yyyy-MM-dd", "yyyy/MM/dd", "yyyy.MM.dd", "yyyy-MM", "yyyy/MM", "yyyy.MM", "yyyy");        Date startDate = null;
+        String formatUsed = null;
         for (String format : dateFormats) {
             try {
-                startDate = new SimpleDateFormat(format).parse(date);
+                SimpleDateFormat sdf = new SimpleDateFormat(format);
+                sdf.setLenient(false); // Asegura que solo se acepten fechas válidas
+                startDate = sdf.parse(date);
+                formatUsed = format;
                 break;
             } catch (ParseException e) {
                 // Continuar con el siguiente formato
@@ -91,7 +94,10 @@ public class ProcesoService {
         if (startDate == null) {
             throw new IllegalArgumentException("Formato de fecha no válido. Los formatos válidos son: yyyy, yyyy-MM, yyyy/MM, yyyy.MM, yyyy-MM-dd, yyyy/MM/dd, yyyy.MM.dd.");
         }
-        Date endDate = calculateEndDate(startDate, date);
+        Date endDate = calculateEndDate(startDate, formatUsed);
+        // Imprimir las fechas para depuración
+        System.out.println("Start Date: " + startDate);
+        System.out.println("End Date: " + endDate);
         List<Proceso> procesos = procesoRepository.findProcesosFromDateRange(startDate,endDate);
         procesos.parallelStream().forEach(this::decryptProceso);
         return ResponseEntity.ok(procesos);
@@ -196,23 +202,27 @@ public class ProcesoService {
     }
     
     private Date calculateEndDate(Date startDate, String formatUsed) {
-    Calendar calendar = Calendar.getInstance();
-    calendar.setTime(startDate);
-    switch (formatUsed) {
-        case "yyyy":
-            calendar.add(Calendar.YEAR, 1);
-            break;
-        case "yyyy-MM":
-        case "yyyy/MM":
-        case "yyyy.MM":
-            calendar.add(Calendar.MONTH, 1);
-            break;
-        case "yyyy-MM-dd":
-        case "yyyy/MM/dd":
-        case "yyyy.MM.dd":
-            calendar.add(Calendar.DAY_OF_MONTH, 1);
-            break;
-    }
-    return calendar.getTime();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(startDate);
+        switch (formatUsed) {
+            case "yyyy":
+                System.out.println("Year format");
+                calendar.add(Calendar.YEAR, 1);
+                break;
+            case "yyyy-MM":
+            case "yyyy/MM":
+            case "yyyy.MM":
+                System.out.println("Year-Month format");
+                calendar.add(Calendar.MONTH, 1);
+                break;
+            case "yyyy-MM-dd":
+            case "yyyy/MM/dd":
+            case "yyyy.MM.dd":
+                System.out.println("Year-Month-Day format");
+                calendar.add(Calendar.DAY_OF_MONTH, 1);
+                break;
+        }
+        calendar.add(Calendar.MILLISECOND, -1);
+        return calendar.getTime();
     }
 }
