@@ -1,6 +1,8 @@
 package com.ciberfisicos1.trazabilidad.service.actividad_service;
 
 import java.util.Map;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -43,6 +45,18 @@ public class ActividadService {
         Actividad actividad = new Actividad();
         actividad.setName((String) actividadMap.get("name"));
         actividad.setDescription((String) actividadMap.get("description"));
+         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        try {
+            if (actividadMap.get("iniDate") != null) {
+                actividad.setIniDate(dateFormat.parse((String) actividadMap.get("iniDate")));
+            }
+            if (actividadMap.get("endDate") != null) {
+                actividad.setEndDate(dateFormat.parse((String) actividadMap.get("endDate")));
+            }
+        } catch (ParseException e) {
+            throw new IllegalArgumentException("Invalid date format", e);
+        }
+        actividad.setStatus((String) actividadMap.get("status"));
         if (actividadMap.get("tareaId") != null) {
             Long tareaId = ((Number) actividadMap.get("tareaId")).longValue();
             Optional<Tarea> tarea = tareaRepository.findById(tareaId);
@@ -83,11 +97,29 @@ public class ActividadService {
     }
 
     private void copyNonNullProperties(Map<String, Object> source, Actividad target) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         if (source.get("name") != null) {
             target.setName((String) source.get("name"));
         }
         if (source.get("description") != null) {
             target.setDescription((String) source.get("description"));
+        }
+        if (source.get("iniDate") != null) {
+            try {
+                target.setIniDate(dateFormat.parse((String) source.get("iniDate")));
+            } catch (ParseException e) {
+                throw new IllegalArgumentException("Invalid date format for iniDate", e);
+            }
+        }
+        if (source.get("endDate") != null) {
+            try {
+                target.setEndDate(dateFormat.parse((String) source.get("endDate")));
+            } catch (ParseException e) {
+                throw new IllegalArgumentException("Invalid date format for endDate", e);
+            }
+        }
+        if (source.get("status") != null) {
+            target.setStatus((String) source.get("status"));
         }
         if (source.get("tarea") != null) {
             Long tareaId = ((Number) source.get("tarea")).longValue();
