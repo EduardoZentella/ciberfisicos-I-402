@@ -73,8 +73,8 @@ public class PiezaService {
             pieza.setPiezaId(((Number) piezaMap.get("piezaId")).longValue());
         }
         pieza.setType((String) piezaMap.get("type"));
-        if (piezaMap.get("lote") != null) {
-            Long loteId = ((Number) piezaMap.get("lote")).longValue();
+        if (piezaMap.get("loteId") != null) {
+            Long loteId = ((Number) piezaMap.get("loteId")).longValue();
             Optional<Lote> lote = loteRepository.findById(loteId);
             if (lote.isPresent()) {
                 pieza.setLote(lote.get());

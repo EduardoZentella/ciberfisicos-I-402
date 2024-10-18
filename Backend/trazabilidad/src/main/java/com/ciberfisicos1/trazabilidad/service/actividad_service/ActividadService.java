@@ -43,8 +43,8 @@ public class ActividadService {
         Actividad actividad = new Actividad();
         actividad.setName((String) actividadMap.get("name"));
         actividad.setDescription((String) actividadMap.get("description"));
-        if (actividadMap.get("tarea") != null) {
-            Long tareaId = ((Number) actividadMap.get("tarea")).longValue();
+        if (actividadMap.get("tareaId") != null) {
+            Long tareaId = ((Number) actividadMap.get("tareaId")).longValue();
             Optional<Tarea> tarea = tareaRepository.findById(tareaId);
             if (tarea.isPresent()) {
                 actividad.setTarea(tarea.get());

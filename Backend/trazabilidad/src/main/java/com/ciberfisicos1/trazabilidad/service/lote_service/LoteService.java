@@ -47,8 +47,8 @@ public class LoteService {
         if(loteMap.get("loteId") == null) {
             lote.setLoteId(((Number) loteMap.get("loteId")).longValue());
         }
-        if (loteMap.get("proceso") != null) {
-            Long procesoId = ((Number) loteMap.get("proceso")).longValue();
+        if (loteMap.get("procesoId") != null) {
+            Long procesoId = ((Number) loteMap.get("procesoId")).longValue();
             Optional<Proceso> proceso = procesoRepository.findById(procesoId);
             if (proceso.isPresent()) {
                 lote.setProceso(proceso.get());
