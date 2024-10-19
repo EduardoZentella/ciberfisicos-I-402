@@ -71,3 +71,7 @@ export interface Pieza {
   Type: string; 
   Lote: number; 
 }
+
+export interface Lote {
+  Proceso_Id: number;
+}

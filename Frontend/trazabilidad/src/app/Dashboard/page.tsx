@@ -2,7 +2,7 @@
 // Resto de los imports...
 'use client'; 
 import cardStyles from '../UI/Dashboard/Processes Menu/Card.module.css';
-import Image from 'next/image';
+import Image, { StaticImageData } from 'next/image';
 import smartTrack_img from '../UI/images/Processes/home_1.jpg';
 import { useLanguage } from '../lib/context/LanguageContext';
 import { Proceso } from '../lib/models';
@@ -31,7 +31,7 @@ const DashboardHomePage = () => {
   }, []);
 
   const { currentTranslations } = useLanguage();
-  const imagesPaths = {
+  const imagesPaths: Record<string, StaticImageData> = {
     'Smart Track': smartTrack_img,
   };
 

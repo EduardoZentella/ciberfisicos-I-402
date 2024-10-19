@@ -154,7 +154,7 @@
     margin-left: 10px;
 }
 
-.type, .status, .date {
+.type {
     border-radius: 8px;
     padding: 10px; 
     margin: 5px;
@@ -165,5 +165,24 @@
     align-items: center;
     justify-content: center;
     height: 10px;
-    width: 40px;
+    width: auto;
+}
+
+.examine{
+    background-color: black;
+    display: none;  
+    border-radius: 5px;
+    box-shadow: 2px 2px 2px rgb(17, 44, 78);
+
+}
+
+.examine p{
+    color: white; 
+    margin: 5px;
+    
+}
+
+
+.item:hover .examine{
+    display: flex;
 }

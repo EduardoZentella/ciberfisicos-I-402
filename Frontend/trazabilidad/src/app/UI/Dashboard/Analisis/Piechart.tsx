@@ -1,79 +1,84 @@
 'use client'; 
 import { useRef, useEffect, MutableRefObject, useState } from "react";
-import RestHandler from '@/app/lib/rest'
-import {Pieza} from '@/app/lib/models'
 import { Chart } from "chart.js/auto";
+import { Pieza } from "@/app/lib/models";
+import RestHandler from "@/app/lib/rest";
+import loader from "@/app/UI/images/chartLoader.gif"
+import Image from "next/image";
 
 export default function PieChart() {
     const chartRef = useRef() as MutableRefObject<HTMLCanvasElement & { chart?: Chart<"pie", number[], string> }>; 
 
-    const[tareas, setPiezas] = useState<Pieza[]>([]);
+    const [greenPzs, setGreenPiezas] = useState<number>(0);
+    const [redPzs, setRedPiezas] = useState<number>(0);
 
     useEffect(() => {
-        const fetchTareas = async () => {
-          try{
-            const data = await RestHandler<Pieza[]>(
-              '/tareas/last/8', 
-              'Tarea', 
-              'GET'
-            );
-            console.log('Raw response:', data);
-            setPiezas(data); 
-          } catch (error) {
-            console.error('Error fetching tareas', error);
-          }
+        const fetchPiezas = async () => {
+            try {
+                const gpzs = await RestHandler<Pieza[]>('/piezas/type/1', 'Pieza', 'GET');
+                console.log('Raw response:', gpzs);
+                setGreenPiezas(gpzs.length); 
+            } catch (error) {
+                console.error('Error fetching piezas', error);
+            }
+
+            try {
+                const rpzs = await RestHandler<Pieza[]>('/piezas/type/2', 'Pieza', 'GET');
+                console.log('Raw response:', rpzs);
+                setRedPiezas(rpzs.length); 
+            } catch (error) {
+                console.error('Error fetching piezas', error);
+            }
         }; 
-        fetchTareas(); 
-        const interval = setInterval(fetchTareas, 1500); 
+
+        fetchPiezas(); 
+        const interval = setInterval(fetchPiezas, 1500); 
         return () => clearInterval(interval); 
-      }, []);
-
-
-
+    }, []);
 
     useEffect(() => {
         if (chartRef.current) {
-            if (chartRef.current.chart) {
-                chartRef.current.chart.destroy(); 
-            }
-
-            const context = chartRef.current.getContext("2d"); 
-
-            if (context) {
-                const newChart = new Chart(context, {
-                    type: "pie", 
-                    data: {
-                        labels: ["Quality Parts", "Defective Parts"], 
-                        datasets: [
-                            {
-                                data: [qualityCount, defectiveCount], // Usar el estado para los datos
-                                backgroundColor: [
-                                    'rgba(255, 99, 132)', 
-                                    'rgba(54, 162, 235)',
-                                ], 
-                                borderWidth: 1, 
-                            }, 
-                        ],
-                    }, 
-                    options: {
-                        responsive: true,
-                        // Aquí puedes agregar opciones adicionales si es necesario
-                    }
-                });
-
-                chartRef.current.chart = newChart;  
+            if (!chartRef.current.chart) {
+                // Crear el gráfico la primera vez
+                const context = chartRef.current.getContext("2d"); 
+                if (context) {
+                    const newChart = new Chart(context, {
+                        type: "pie",
+                        data: {
+                            labels: ["Quality Parts", "Defective Parts"],
+                            datasets: [
+                                {
+                                    data: [greenPzs, redPzs],
+                                    backgroundColor: [
+                                        '#17a2b8', // Color para piezas defectuosas
+                                        '#6f42c1', // Color para piezas de calidad
+                                        //'#112c4e'
+                                    ],
+                                    borderWidth: 1,
+                                },
+                            ],
+                        },
+                        options: {
+                            responsive: true,
+                        },
+                    });
+                    chartRef.current.chart = newChart;
+                }
+            } else {
+                // Si el gráfico ya existe, actualizar los datos
+                chartRef.current.chart.data.datasets[0].data = [greenPzs, redPzs];
+                chartRef.current.chart.update();
             }
         }
-    }, [qualityCount, defectiveCount]); // Agregar estados como dependencias
+    }, [greenPzs, redPzs]); // Actualizar cuando cambian las piezas
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setQualityCount(prev => prev + 1); // Incrementar piezas de calidad
-        }, 5000); // Cada 5 segundos
-
-        return () => clearInterval(interval); // Limpiar el intervalo al desmontar
-    }, []);
-
+    if (greenPzs==0 || redPzs==0){
+        return(
+            <div>
+                <Image src={loader} alt="" />
+            </div>
+        )
+    }
     return (
         <div>
             <canvas ref={chartRef} />

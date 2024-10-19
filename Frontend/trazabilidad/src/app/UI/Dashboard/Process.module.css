@@ -244,3 +244,10 @@
 .warningContainer {
     color: #000; 
 }
+
+.numSelection {
+    border: black; 
+    color: black; 
+    width: 60px; 
+    text-align: 'center';
+}

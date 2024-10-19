@@ -10,8 +10,10 @@ import {
   Robot_Tarea,
   Tarea,
   Usuario, 
-  Pieza
+  Pieza,
+  Lote
 } from './models';
+import { it } from 'node:test';
 
 type DataType =
   | Usuario
@@ -22,7 +24,8 @@ type DataType =
   | Robot_Proceso
   | Robot_Tarea
   | Robot_Actividad
-  | Pieza;
+  | Pieza
+  | Lote;
 
 type RequestMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
@@ -43,7 +46,7 @@ const convertData = (data: any, type: string): DataType | DataType[] => {
         } as Usuario;
       case 'Proceso':
         return {
-          Proceso_Id: item.procesoid,
+          Proceso_Id: item.procesoId,
           Nombre: item.name,
           Location: item.location,
           Descripcion: item.description,
@@ -53,17 +56,17 @@ const convertData = (data: any, type: string): DataType | DataType[] => {
         } as Proceso;
       case 'Tarea':
         return {
-          Tarea_Id: item.tareaid,
+          Tarea_Id: item.tareaId,
           Nombre: item.name,
           Descripcion: item.description,
-          Proceso_Id: item.procesoid,
+          Proceso_Id: item.procesoId,
           Ini_Date: parseDate(item.iniDate),
           End_Date: parseDate(item.endDate),
           Status: item.status,
         } as Tarea;
       case 'Actividad':
         return {
-          Actividad_Id: item.actividadid,
+          Actividad_Id: item.actividadId,
           Nombre: item.name,
           Descripcion: item.desciption,
           Tarea_Id: item.tareaid,
@@ -103,8 +106,12 @@ const convertData = (data: any, type: string): DataType | DataType[] => {
         return {
           Pieza_Id: item.piezaId, 
           Type: item.type, 
-          Lote: item.lote,
-        }
+          Lote: item.loteId,
+        } as Pieza;
+      case 'Lote': 
+        return{
+          Proceso_Id: item.procesoId,
+        } as Lote;
       default:
         throw new Error('Unknown data type');
     }
@@ -149,7 +156,7 @@ const RestHandler = async <T extends DataType | DataType[]>(
     }
 
     const data = await response.json();
-    console.log(data)
+    //console.log(data)
     return convertData(data, type) as T;
   } catch (error) {
     console.error('Error fetching data:', error);

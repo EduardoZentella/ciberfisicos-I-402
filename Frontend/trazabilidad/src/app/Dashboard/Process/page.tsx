@@ -23,7 +23,7 @@ import PieChart from "@/app/UI/Dashboard/Analisis/Piechart"
 import LineChart from "@/app/UI/Dashboard/Analisis/Linechart"
 import BarChart from "@/app/UI/Dashboard/Analisis/Barchart"
 import { useLanguage } from '../../lib/context/LanguageContext';
-import {Tarea} from '../../lib/models'
+import {Proceso, Tarea} from '../../lib/models'
 import {Robot} from '../../lib/models'
 import RestHandler from '../../lib/rest'
 
@@ -53,6 +53,7 @@ const Process = () => {
   }, [searchParams]); 
 
     const[tareas, setTareas] = useState<Tarea[]>([]);
+    const[promedio, setPromedio] = useState<number>(0);
 
     useEffect(() => {
       const fetchTareas = async () => {
@@ -68,9 +69,38 @@ const Process = () => {
         } catch (error) {
           console.error('Error fetching tareas', error);
         }
+        
+        try{
+          const argument = document.getElementById("lastHours") as HTMLInputElement; 
+          const hours = argument?.value || 8; 
+          const data = await RestHandler<Proceso[]>(
+            `/procesos/lastHours/${hours}`, 
+            'Proceso',
+            'GET'
+          ); 
+
+          let totalDurationMs = 0; 
+
+          data.forEach(proceso =>{
+            const time_a = new Date(proceso.Ini_Date).getTime(); 
+            const time_b = new Date(proceso.End_Date).getTime(); 
+
+            const duration = time_b - time_a; 
+            totalDurationMs += duration;
+          })
+
+          totalDurationMs = totalDurationMs/data.length; 
+          totalDurationMs = Math.floor(totalDurationMs/60000)
+          setPromedio(totalDurationMs)
+          console.log('Raw response: ', data); 
+        } catch(error){
+          console.error('Error fetching data', error)
+        }
+
+      
       }; 
       fetchTareas(); 
-      const interval = setInterval(fetchTareas, 1500); 
+      const interval = setInterval(fetchTareas, 10000); 
       return () => clearInterval(interval); 
     }, []); 
 
@@ -99,13 +129,13 @@ const Process = () => {
       }; 
       fetchRobots(); 
     
-      const interval = setInterval(fetchRobots, 1500); 
+      const interval = setInterval(fetchRobots, 10000); 
       return () => clearInterval(interval); 
     }, []); 
     
    
 
-    const imagesRobots = {
+    const imagesRobots : any = {
       'B1': b1Icon,
       'x-Arm': xArm, 
       'Omron-LD': omronIcon, 
@@ -279,7 +309,7 @@ const Process = () => {
               <Image src={qualityIcon} alt="" className={Styles.iconButton}/>
                 <h1 style={{marginLeft: '10px'}}>{currentTranslations.qualityRate}</h1>
                 <div className={Styles.overlay}>
-                  <a href='/Dashboard/Dashboard/Analisis'>
+                  <a href='/Dashboard/Analisis'>
                     <button  style={{ height:'50px'}}>
                       <Image src={detailsIcon} alt="" className={Styles.iconButton}/>
                     </button>
@@ -312,8 +342,10 @@ const Process = () => {
               
 
               <div className={Styles.chartContainer} style={{gridColumn:2, gridRow:3}}>
-                <div style={{position: 'relative', height: '100%', width: '100%'}}>
-                  <LineChart/>
+                <div style={{position: 'relative', height: '100%', width: '100%', display:'flex', flexDirection: 'column',alignItems: 'center', justifyContent: 'center'}}>
+                  <p style={{color: 'black', textAlign: 'center'}}>Selecciona las últimas horas para el promedio: </p>
+                  <input type="number" className={Styles.numSelection} placeholder='8' id = 'lastHours'/>
+                  <p style={{fontSize:'70px', color: 'black'}}>{promedio} seg</p>
                 </div>
               </div>  
             </div>  
