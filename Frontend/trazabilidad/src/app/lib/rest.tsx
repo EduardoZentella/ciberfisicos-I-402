@@ -9,7 +9,8 @@ import {
   Robot_Proceso,
   Robot_Tarea,
   Tarea,
-  Usuario,
+  Usuario, 
+  Pieza
 } from './models';
 
 type DataType =
@@ -20,7 +21,8 @@ type DataType =
   | Robot
   | Robot_Proceso
   | Robot_Tarea
-  | Robot_Actividad;
+  | Robot_Actividad
+  | Pieza;
 
 type RequestMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
@@ -97,6 +99,12 @@ const convertData = (data: any, type: string): DataType | DataType[] => {
           End_Date: parseDate(item.endDate),
           Status: item.status,
         } as Robot_Actividad;
+      case 'Pieza': 
+        return {
+          Pieza_Id: item.piezaId, 
+          Type: item.type, 
+          Lote: item.lote,
+        }
       default:
         throw new Error('Unknown data type');
     }

@@ -65,3 +65,9 @@ export interface Robot_Actividad {
   End_Date: Date;
   Status: string;
 }
+
+export interface Pieza {
+  Pieza_Id: number; 
+  Type: string; 
+  Lote: number; 
+}

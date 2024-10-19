@@ -20,7 +20,7 @@ const DashboardHomePage = () => {
   useEffect(() => {
     const fetchProcesos = async () => {
       try {
-        const data = await RestHandler<Proceso[]>('/procesos', 'Proceso', 'GET');
+        const data = await RestHandler<Proceso[]>('/procesos/status/2', 'Proceso', 'GET');
         console.log('Raw response:', data);
         setProcesos(data);
       } catch (error) {
