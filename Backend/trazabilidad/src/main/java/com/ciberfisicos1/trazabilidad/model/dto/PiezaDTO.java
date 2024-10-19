@@ -5,5 +5,6 @@ import lombok.Data;
 @Data
 public class PiezaDTO {
     private Long piezaId;
+    private String type;
     private Long loteId;
 }

@@ -32,6 +32,7 @@ public class Pieza {
     public PiezaDTO toDTO() {
         PiezaDTO dto = new PiezaDTO();
         dto.setPiezaId(this.piezaId);
+        dto.setType(this.type);
         dto.setLoteId(this.lote.getLoteId());
         return dto;
     }

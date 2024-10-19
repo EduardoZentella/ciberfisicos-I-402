@@ -40,7 +40,7 @@ public class TareaService {
     public ResponseEntity<TareaDTO> getTareaById(Long tareaId) {
         Optional<Tarea> tarea = tareaRepository.findById(tareaId);
         tarea.ifPresent(this::decryptTarea);
-        return ResponseEntity.ok(tarea.map(Tarea::toDTO).orElseThrow(() -> new ResourceNotFoundException("Actividad no encontrada con id: " + tareaId)));
+        return ResponseEntity.ok(tarea.map(Tarea::toDTO).orElseThrow(() -> new ResourceNotFoundException("Tarea no encontrada con id: " + tareaId)));
     }
 
     public ResponseEntity<List<TareaDTO>> getLastNTareas(int n) {
@@ -74,8 +74,21 @@ public class TareaService {
         Tarea tarea = new Tarea();
         tarea.setName((String) tareaMap.get("name"));
         tarea.setDescription((String) tareaMap.get("description"));
-        if (tareaMap.get("proceso") != null) {
-            Long procesoId = ((Number) tareaMap.get("proceso")).longValue();
+        
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        try {
+            if (tareaMap.get("iniDate") != null) {
+                tarea.setIniDate(dateFormat.parse((String) tareaMap.get("iniDate")));
+            }
+            if (tareaMap.get("endDate") != null) {
+                tarea.setEndDate(dateFormat.parse((String) tareaMap.get("endDate")));
+            }
+        } catch (ParseException e) {
+            throw new IllegalArgumentException("Invalid date format", e);
+        }
+        tarea.setStatus((String) tareaMap.get("status"));
+        if (tareaMap.get("procesoId") != null) {
+            Long procesoId = ((Number) tareaMap.get("procesoId")).longValue();
             Optional<Proceso> proceso = procesoRepository.findById(procesoId);
             if (proceso.isPresent()) {
                 tarea.setProceso(proceso.get());

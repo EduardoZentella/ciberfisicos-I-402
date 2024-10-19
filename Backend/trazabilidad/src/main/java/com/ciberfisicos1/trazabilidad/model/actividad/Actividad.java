@@ -30,6 +30,15 @@ public class Actividad {
     @Column(name = "Description")
     private String description;
 
+    @Column(name = "Ini_Date")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private Date iniDate;
+    @Column(name = "End_Date")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private Date endDate;
+    @Column(name = "Status")
+    private String status;
+
     @ManyToOne
     @Nonnull
     @JoinColumn(name = "Tarea_Id", referencedColumnName = "Tarea_Id", nullable = false)
